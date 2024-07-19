@@ -29,11 +29,13 @@ SitecoreCommander mitigates these security concerns by only using various Siteco
 
 - Run long-running tasks without the hassle associated with traditional PowerShell scripting within Sitecore.
 Optimize task management, ensuring that resource-intensive operations are handled smoothly.
-API Interaction:
+
+### API Interaction:
 
 - Tools like Postman and Firecamp.dev are excellent for making single API calls to Sitecore, useful for testing and debugging.
 SitecoreCommander is ideal for scenarios requiring multiple API calls and complex scripting, offering a more robust solution for automation.
-Use Cases:
+
+## Use Cases:
 
 ### Automating Content Management:
 - Automate the creation, update, and deletion of content items in bulk, making it easier to manage large volumes of content.
