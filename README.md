@@ -48,7 +48,7 @@ Use Cases:
 - Automate the import and export of data between Sitecore and other systems, streamlining integration processes.
 
 ## SETUP
-- use the Sitecore CLI to create an user.json
+- use the Sitecore CLI to create a valid user.json (when you have multiple organisation, be sure you use the right organisation when connection to a non local XM Cloud)
 - edit the Config.cs and supply the values for your Sitecore 
 - edit the Program.cs and create the code you need.
 
