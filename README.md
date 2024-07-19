@@ -3,7 +3,6 @@ SitecoreCommander is a tool designed for managing Sitecore instances, typically 
 
 For Sitecore XM Cloud and Sitecore 10.3+ 
 
-
 ## Overview:
 
 SitecoreCommander and Visual Studio, providing a powerful scripting and automation framework for managing Sitecore environments. It allows developers and administrators to execute complex scripts and manage long-running tasks efficiently within Sitecore.
@@ -25,7 +24,8 @@ Enhanced Security:
 
 - For security reasons, Sitecore PowerShell Elevation is recommended only for local environments.
 SitecoreCommander mitigates these security concerns by only using various Sitecore APIs.
-Efficient Task Execution:
+
+### Efficient Task Execution:
 
 - Run long-running tasks without the hassle associated with traditional PowerShell scripting within Sitecore.
 Optimize task management, ensuring that resource-intensive operations are handled smoothly.
