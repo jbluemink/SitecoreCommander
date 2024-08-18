@@ -15,5 +15,12 @@ namespace SitecoreCommander
 
         internal static string DefaultLanguage = "en";
 
+        //values for the old Sitecore.Services.Client The ItemService
+        //This API might be useful for migration,
+        //because it has been around for a long time and even old Sitecore XP versions have this API without the need to install anything extra.
+        internal static string RestFullApiHostname = "https://localhost";
+        internal static string RestFullSitecoreUser = "myxmcloudmigrator";
+        internal static string RestFullSitecorePassword = "supersecret";
+
     }
 }
