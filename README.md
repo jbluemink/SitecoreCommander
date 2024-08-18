@@ -55,4 +55,5 @@ SitecoreCommander is ideal for scenarios requiring multiple API calls and comple
 - edit the Program.cs and create the code you need.
 
 ### Recent Updates:
-19 July initial version with Remove Language/Version from a single item or a Tree of items
+- 19 July initial version with Remove Language/Version from a single item or a Tree of items
+- 9 August Added a move item methode and Move SubItems methode including an exclude option
