@@ -57,3 +57,4 @@ SitecoreCommander is ideal for scenarios requiring multiple API calls and comple
 ### Recent Updates:
 - 19 July initial version with Remove Language/Version from a single item or a Tree of items
 - 9 August Added a move item methode and Move SubItems methode including an exclude option
+- 19 August Added RESTful API and an example of how to migrate a page item from an old Sitecore with REST api to XM Cloud with GraphQL

@@ -48,10 +48,7 @@ namespace SitecoreCommander.Authoring
                 inputFieldFormat("__Hidden", xpItem.__Hidden) +
                 inputFieldFormat("title", xpItem.Title) +
                 inputFieldFormat("Content", xpItem.Content) +
-                inputFieldFormat("MetaTitle", xpItem.MetaTitle) +
-                inputFieldFormat("MetaDescription", xpItem.MetaDescription) +
                 inputFieldFormat("NavigationTitle", xpItem.LinkCaptionInNavigation) +
-                inputFieldFormat("MetaImage", xpItem.OpenGraphImageUrl) +
                 inputFieldFormat("SxaTags", xpItem.SxaTags) +
                 inputFieldFormat("__Renderings", xpItem.MigratedRenderingenToXmCloud) +
                "\r\n      ]\r\n    }\r\n  ) {\r\n    item {\r\n      itemId\r\n    }\r\n  }\r\n}",
@@ -114,10 +111,7 @@ namespace SitecoreCommander.Authoring
                 inputFieldFormat("__Updated by", "migrator") +
                 inputFieldFormat("title", xpItem.Title) +
                 inputFieldFormat("Content", xpItem.Content) +
-                inputFieldFormat("MetaTitle", xpItem.MetaTitle) +
-                inputFieldFormat("MetaDescription", xpItem.MetaDescription) +
                 inputFieldFormat("NavigationTitle", xpItem.LinkCaptionInNavigation) +
-                inputFieldFormat("MetaImage", xpItem.OpenGraphImageUrl) +
                "\r\n      ]\r\n    }\r\n  ) {\r\n    item {\r\n      itemId\r\n    }\r\n  }\r\n}",
                 new
                 {
