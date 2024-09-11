@@ -33,9 +33,12 @@ namespace SitecoreCommander.Edge
   item(path: ""{itemPath}"", language: ""{language}"") {{
     children {{
       results {{
-      name
+        name
         id
         path
+        created:field(name  : ""__Created"") {{
+            value
+        }} 
       }}
     }}
   }}

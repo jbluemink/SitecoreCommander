@@ -29,7 +29,16 @@ namespace SitecoreCommander.Edge
                 HttpMethod.Post,
                 "",
                 apikey,
-                "query { item(path: \"" + itemPath + "\", language: \"" + language + "\") {id, name, path }}",
+                $@"query {{ 
+item(path:""{itemPath}"", language: ""{language}"") {{
+    id
+    name
+    path
+    created:field(name  : ""__Created"") {{
+        value
+        }}
+    }}
+}}",
                 new
                 {
                 },

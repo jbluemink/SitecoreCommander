@@ -57,6 +57,9 @@ namespace SitecoreCommander.Authoring
         security : field(name: ""__Security"") {{
           value
         }}
+        created:field(name  : ""__Created"") {{
+            value
+        }}
         access {{
           canWrite
           canDelete

@@ -1,5 +1,6 @@
 ﻿using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Login;
+using System.Xml.Linq;
 
 
 namespace SitecoreCommander.Authoring
@@ -13,22 +14,29 @@ namespace SitecoreCommander.Authoring
             graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
             string accessToken = env.AccessToken;
 
-             Console.WriteLine("Try to get item security from: " + itemPath);
+             Console.WriteLine("Try to get item with security fields from: " + itemPath);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.GetItemWithSecurity>(
+            var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.ItemWithSecurity>(
                 new Uri(graphqlendpoint),
                 HttpMethod.Post,
                 accessToken,
                 "",
-                $@"query ($path:String!) {{
+                $@"query ($path:String) {{
   item(where: {{ path: $path }}) {{
     name
     itemId
     path
+    version
+    language {{
+        name
+    }}
     security : field(name:""__Security"") {{
       value
-    }} 
+    }}
+    created:field(name  : ""__Created"") {{
+        value
+    }}
     access {{
       canWrite
       canDelete

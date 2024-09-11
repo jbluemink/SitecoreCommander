@@ -1,4 +1,5 @@
-﻿using SitecoreCommander.Authoring;
+﻿using RaiXpToCloudMigrator.XmCloud;
+using SitecoreCommander.Authoring;
 using SitecoreCommander.Command;
 using SitecoreCommander.Edge;
 using SitecoreCommander.Lib;
@@ -8,20 +9,24 @@ Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
 var env = Login.GetSitecoreEnvironment();
 
 
-//Example remove al item security from items in a sunbtree
-var status = await DeleteSecurityFromSubtree.RemoveAsync(env, "/sitecore/content/Home", "en");
+//Example move al items in a folder to subfolders based on the created month
+//var status = await MoveSubItemsToMonthFolders.MoveAsync(env, "/sitecore/media library/Project/RAI Amsterdam xmc/Aquatech/Aquatech/news/2022", "en", CreateFolderItem.MediaFolderID);
+
+
+//Example remove al item security from items in a subtree
+//var status = await DeleteSecurityFromSubtree.RemoveAsync(env, "/sitecore/content/Home", "en");
 
 
 //Example iterate through all sites and update the security of the home item 
 //var sites = GetEdgeSites.Get(env, CancellationToken.None);
 //foreach (var site in sites.Result)
 //{
-//    var homeItem = GetItem.GetSitecoreItem(env, CancellationToken.None, site.rootPath);
+//    var homeItem = await GetItem.GetSitecoreItem(env, CancellationToken.None, site.rootPath);
 //    if (homeItem != null)
-//    {
+//   {
 //        Console.WriteLine("set right for site " + site.name);
-//        //var updated = await UpdateItemSecurity.UpdateItem(env, CancellationToken.None, homeItem.Result.id, "ar|sitecore\\Developer|pd|+item:read|pe|+item:write|+item:read|", "en");
-//        var updated = await UpdateItemSecurity.UpdateItem(env, CancellationToken.None, homeItem.Result.id, "", "en");
+//        //var updated = await UpdateItemSecurity.UpdateItem(env, CancellationToken.None, homeItem.id, "ar|sitecore\\Developer|pd|+item:read|pe|+item:write|+item:read|", "en");
+//        var updated = await UpdateItemSecurity.UpdateItem(env, CancellationToken.None, homeItem.id, "", "en");
 //    }
 //}
 

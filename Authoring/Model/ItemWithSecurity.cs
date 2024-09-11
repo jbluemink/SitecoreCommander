@@ -1,6 +1,6 @@
 ﻿namespace SitecoreCommander.Authoring.Model
 {
-    internal class GetItemWithSecurity
+    internal class ItemWithSecurity
     {
         public ResultItemWithSecurity item { get; set; }
     }
