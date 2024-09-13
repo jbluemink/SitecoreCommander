@@ -54,7 +54,7 @@ namespace SitecoreCommander.Command
             var monthFolderPath = rootItem.path + "/" + month.ToString();
 
             // Check if the result is already in cache
-            if (cache.TryGetValue(monthFolderPath, out string cachedMonthFolderPath))
+            if (cache.TryGetValue(monthFolderPath, value: out string cachedMonthFolderPath))
             {
                 return cachedMonthFolderPath;
             }

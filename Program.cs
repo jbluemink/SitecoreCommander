@@ -10,7 +10,10 @@ var env = Login.GetSitecoreEnvironment();
 
 
 //Example move al items in a folder to subfolders based on the created month
-//var status = await MoveSubItemsToMonthFolders.MoveAsync(env, "/sitecore/media library/Project/RAI Amsterdam xmc/Aquatech/Aquatech/news/2022", "en", CreateFolderItem.MediaFolderID);
+var status = await MoveSubItemsToMonthFolders.MoveAsync(env, "/sitecore/media library/Project/test2", "en", CreateFolderItem.MediaFolderID);
+
+//Example move al items in a folder to subfolders 
+//var status = await MoveSubItemsToMultipleFolders.MoveAsync(env, "/sitecore/media library/Project/test1", "en", CreateFolderItem.MediaFolderID,50,100);
 
 
 //Example remove al item security from items in a subtree
