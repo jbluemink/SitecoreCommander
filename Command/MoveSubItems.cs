@@ -6,7 +6,7 @@ namespace SitecoreCommander.Command
 {
     internal static class MoveSubItems
     {
-        public static async Task<bool> MoveAsync(EnvironmentConfiguration env, string path, string language, string targetParentPath, string[] excludeItemNames) {
+        public static async Task<bool> MoveAsync(EnvironmentConfiguration env, string path, string targetParentPath, string[] excludeItemNames) {
             using (var cts = new CancellationTokenSource())
             {
                 ConsoleCancelEventHandler handler = (o, e) =>
@@ -18,14 +18,14 @@ namespace SitecoreCommander.Command
                 Console.CancelKeyPress += handler;
                 try
                 {
-                    var childs = await GetChilderen.Get(env, cts.Token, path, language);
+                    var childs = await GetItemChildren.GetAll(env, cts.Token, path);
                     if (childs == null)
                     {
-                        Console.WriteLine("path not exist or no childs:" + path + " in language:" + language);
+                        Console.WriteLine("path not exist or no childs:" + path);
                     }
                     else
                     {
-                        foreach (ResultGetItem item in childs)
+                        foreach (var item in childs)
                         {
                             if (excludeItemNames.Contains(item.name))
                             {

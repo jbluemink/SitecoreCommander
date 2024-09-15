@@ -10,7 +10,7 @@ var env = Login.GetSitecoreEnvironment();
 
 
 //Example move al items in a folder to subfolders based on the created month
-var status = await MoveSubItemsToMonthFolders.MoveAsync(env, "/sitecore/media library/Project/test2", "en", CreateFolderItem.MediaFolderID);
+//var status = await MoveSubItemsToMonthFolders.MoveAsync(env, "/sitecore/media library/Project/test2", "en", CreateFolderItem.MediaFolderID);
 
 //Example move al items in a folder to subfolders 
 //var status = await MoveSubItemsToMultipleFolders.MoveAsync(env, "/sitecore/media library/Project/test1", "en", CreateFolderItem.MediaFolderID,50,100);
@@ -38,7 +38,7 @@ var status = await MoveSubItemsToMonthFolders.MoveAsync(env, "/sitecore/media li
 //var status = await DeleteItemLanguageVersionFromSubtree.RemoveAsync(env, "/sitecore/content/xxxx", "en");
 
 //Example MoveSubItems
-//var status = await MoveSubItems.MoveAsync(env, "/sitecore/content/Home/mytree", "en", "/sitecore/content/Home/tree2", new string[] {"dontmove"});
+//var status = await MoveSubItems.MoveAsync(env, "/sitecore/content/Home/test", "/sitecore/content/Home/test2", new string[] {"dontmove"});
 
 //Example migrate item from sitecore with REST api to XM Cloud
 //var restApiCookies = SscItemService.SourceLogIn();
