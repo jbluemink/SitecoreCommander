@@ -1,5 +1,5 @@
 # SitecoreCommander
-SitecoreCommander is a tool designed for managing Sitecore instances, typically utilized by developers and administrators working with the Sitecore Content Management System (CMS). It helps in performing various administrative tasks by Using the API's
+SitecoreCommander is a tool designed for managing Sitecore instances, typically utilized by developers and administrators working with the Sitecore Content Management System (CMS). It helps in performing various administrative tasks by Using the API's. See [Using the Sitecore APIs with Sitecore Commander](https://www.stockpick.nl/sitecore/using-the-sitecore-apis-with-sitecore-commander/)
 
 For Sitecore XM Cloud and Sitecore 10.3+ 
 
