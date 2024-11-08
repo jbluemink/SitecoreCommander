@@ -2,11 +2,15 @@
 using SitecoreCommander.Authoring;
 using SitecoreCommander.Command;
 using SitecoreCommander.Edge;
+using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Lib;
 using SitecoreCommander.RESTful;
 
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
 var env = Login.GetSitecoreEnvironment();
+
+//Example set all items in a tree unpublisable for a specif language, (not language should exist for the root)
+var result = await UnpublishLanguageFromSubtree.EditAsync(env, "/sitecore/content/Home","es");
 
 
 //Example move al items in a folder to subfolders based on the created month

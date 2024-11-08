@@ -55,9 +55,13 @@ Contain code for Authoring, Edge and RESTful Sitecore API.
 - edit the Config.cs and supply the values for your Sitecore 
 - edit the Program.cs and create the code you need.
 
+## Autentication
+ - For the Authoring API, use the Sitecore CLI to log in, enabling user-based authentication with roles and permissions. In contrast, the Automation Client is designed for automated processes, using a service account that operates without user-specific access control.
+ 
 ### Recent Updates:
 - 19 July initial version with Remove Language/Version from a single item or a Tree of items
 - 9 August Added a move item methode and Move SubItems methode including an exclude option
 - 19 August Added RESTful API and an example of how to migrate a page item from an old Sitecore with REST api to XM Cloud with GraphQL
 - 24 August Added methodes to read and write item security and getSites methode
 - 15 September Added methodes to help limiting the number of items under any given node to 100 or less, by moving to multiple subfolders
+- 8 November Added UnpublishLanguageFromSubtree
