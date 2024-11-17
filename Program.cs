@@ -9,8 +9,23 @@ using SitecoreCommander.RESTful;
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
 var env = Login.GetSitecoreEnvironment();
 
-//Example set all items in a tree unpublisable for a specif language, (not language should exist for the root)
-var result = await UnpublishLanguageFromSubtree.EditAsync(env, "/sitecore/content/Home","es");
+//Example create multiple items
+  var parent = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Home/test");
+  if (parent != null)
+  {
+    for (int i = 0; i < 10; i++)
+    {
+        var fieldNameValues = new Dictionary<string, string>
+        {
+            { "Title", "Test "+i },
+            { "Text", "Test item created with SitecoreCommander" }
+        };
+        var updated = await AddItem.Create(env, CancellationToken.None, "testitem"+i, AddItem.SampleItemTemplateID, parent.id, "en", fieldNameValues);
+    }
+   }
+
+// Example: Set all items in a tree as unpublishable for a specific language (the language should exist for the root item).
+//var result = await UnpublishLanguageFromSubtree.EditAsync(env, "/sitecore/content/Home","es");
 
 
 //Example move al items in a folder to subfolders based on the created month
