@@ -32,7 +32,7 @@ Optimize task management, ensuring that resource-intensive operations are handle
 
 ### API Interaction:
 
-- Tools like Postman and Firecamp.dev are excellent for making single API calls to Sitecore, useful for testing and debugging.
+- Tools like Postman, Firecamp.dev or GraphQL Playground are excellent for making single API calls to Sitecore, useful for testing and debugging.
 SitecoreCommander is ideal for scenarios requiring multiple API calls and complex scripting, offering a more robust solution for automation.
 Contain code for Authoring, Edge and RESTful Sitecore API.
 
@@ -65,3 +65,4 @@ Contain code for Authoring, Edge and RESTful Sitecore API.
 - 24 August Added methodes to read and write item security and getSites methode
 - 15 September Added methodes to help limiting the number of items under any given node to 100 or less, by moving to multiple subfolders
 - 8 November Added UnpublishLanguageFromSubtree
+- 18 November Added generiek create item
