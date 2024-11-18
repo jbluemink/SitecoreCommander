@@ -38,6 +38,10 @@ namespace SitecoreCommander.Lib
             if (userJson.Endpoints.TryGetValue(endpointName, out EnvironmentConfiguration endpointConfig))
             {
                 Console.WriteLine($"Connection {endpointName} Ref: {endpointConfig.Ref} Host: {endpointConfig.Host}");
+                if (!string.IsNullOrEmpty(endpointConfig.Ref) && string.IsNullOrEmpty(endpointConfig.AccessToken))
+                { 
+                    return GetEnvironmentConfiguration(userJson, "xmCloud");
+                }
                 return endpointConfig;
             }
             else

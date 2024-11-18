@@ -5,7 +5,7 @@ namespace SitecoreCommander
     {
         //Use Sitecore CLI for Login into Sitecore and use the Authoring API, The path to the user.json
         internal static string XMCloudUserJsonPath = @"C:\projects\xmcloud-foundation-head\.sitecore\user.json";
-        //leave EnvironmentName empty for default or use the --environment-name from the dotnet sitecore login
+        //leave EnvironmentName empty for default or xmCloud or use the --environment-name from the dotnet sitecore login
         internal static string EnvironmentName = @"";
 
 
