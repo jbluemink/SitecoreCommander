@@ -57,8 +57,13 @@ namespace SitecoreCommander.Authoring
                 return null;
             }
 
-            // Use the response data
-            Console.WriteLine($"Item fetched with Id: {result.Data.item.itemId} ");
+            if (result.Data == null || result.Data.item == null)
+            {
+                return null;
+            }
+
+                // Use the response data
+                Console.WriteLine($"Item fetched with Id: {result.Data.item.itemId} ");
             return result.Data.item;
         }
 
