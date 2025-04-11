@@ -56,6 +56,11 @@ namespace SitecoreCommander.Authoring
                 Console.WriteLine($"GraphQL returned errors:\n{string.Join("\n", result.Errors.Select(x => $"  - {x.Message}"))}");
                 return null;
             }
+            if (result.Data.item == null)
+            {
+                Console.WriteLine($"item not found ,");
+                return null;
+            } 
 
             // Use the response data
             Console.WriteLine($"Item fetched with Id: {result.Data.item.itemId} ");

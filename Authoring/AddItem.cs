@@ -2,7 +2,7 @@
 using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Login;
 
-namespace RaiXpToCloudMigrator.XmCloud
+namespace SitecoreCommander.Authoring
 {
     internal class AddItem
     {

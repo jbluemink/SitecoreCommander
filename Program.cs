@@ -1,28 +1,42 @@
 ﻿using RaiXpToCloudMigrator.XmCloud;
+using SitecoreCommander;
 using SitecoreCommander.Authoring;
 using SitecoreCommander.Command;
 using SitecoreCommander.Edge;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Lib;
 using SitecoreCommander.RESTful;
+using SitecoreCommander.Wordpress;
 
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
 var env = Login.GetSitecoreEnvironment();
 
+//Example import from WordPress XML file
+var language = "en";
+var siteroot = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Home", language);
+if (siteroot == null)
+{
+    Console.WriteLine("Site root not found");
+    return;
+}
+var wp = new WordpressImport();
+await wp.ImportPostsAsync(env, siteroot, language, "{76036F5E-CBCE-46D1-AF0A-4143F9B557AA}", @"C:\projects\SitecoreCommander\WordPress-example.xml");
+
+
 //Example create multiple items
-  var parent = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Home/test");
-  if (parent != null)
-  {
-    for (int i = 0; i < 10; i++)
-    {
-        var fieldNameValues = new Dictionary<string, string>
-        {
-            { "Title", "Test "+i },
-            { "Text", "Test item created with SitecoreCommander" }
-        };
-        var updated = await AddItem.Create(env, CancellationToken.None, "testitem"+i, AddItem.SampleItemTemplateID, parent.id, "en", fieldNameValues);
-    }
-   }
+//  var parent = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Home/test");
+//  if (parent != null)
+//  {
+//    for (int i = 0; i < 10; i++)
+//    {
+//        var fieldNameValues = new Dictionary<string, string>
+//        {
+//            { "Title", "Test "+i },
+//            { "Text", "Test item created with SitecoreCommander" }
+//        };
+//        var updated = await AddItem.Create(env, CancellationToken.None, "testitem"+i, AddItem.SampleItemTemplateID, parent.id, "en", fieldNameValues);
+//    }
+//   }
 
 // Example: Set all items in a tree as unpublishable for a specific language (the language should exist for the root item).
 //var result = await UnpublishLanguageFromSubtree.EditAsync(env, "/sitecore/content/Home","es");
@@ -64,8 +78,8 @@ var env = Login.GetSitecoreEnvironment();
 //var sourceItem = SscItemService.GetItem("/sitecore/content/Home/test", restApiCookies, "en");
 //const string SxaHeadlessPageTemplateId = "{4829027E-F126-4192-ACE6-F0F2E3BE2A26}";
 //Guid HomeGuid = Guid.Parse("{110D559F-DEA5-42EA-9C1C-8A5DF7E70EF9}");
-// place the sourceItem below Home and use template SxaHeadlessPageTemplateId beside language "en", try to add "de" and "nl" version if exist.
-// adjust the CreateMigratedSxaPage to map the fields you need, and write logic for converting the layout. 
+//place the sourceItem below Home and use template SxaHeadlessPageTemplateId beside language "en", try to add "de" and "nl" version if exist.
+//adjust the CreateMigratedSxaPage to map the fields you need, and write logic for converting the layout. 
 //var status = await CreateMigratedSxaPage.CreateLabelPageItem(env, restApiCookies, CancellationToken.None, "migratedHome2", HomeGuid, sourceItem, SxaHeadlessPageTemplateId, new string[] { "de", "nl" });
 
 
