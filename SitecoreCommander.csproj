@@ -7,4 +7,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="vanwijnensamenbouwenaanruimtevooreenbeterleven.WordPress.2025-05-16.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="WordPress-example.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -55,7 +55,8 @@ item(path:""{itemPath}"", language: ""{language}"") {{
                 if (result.Data.item == null)
             {
                 Console.WriteLine($"item not found ,");
-            }
+            
+             }
             else
             {
                 Console.WriteLine($"Found item {result.Data.item?.name} ,");

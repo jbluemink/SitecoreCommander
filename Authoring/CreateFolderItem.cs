@@ -9,6 +9,8 @@ namespace RaiXpToCloudMigrator.XmCloud
     internal class CreateFolderItem
     {
         public static string MediaFolderID = "{FE5DD826-48C6-436D-B87A-7C4210C7413B}";
+        public static string TagFolderID = "{25A6B824-672F-4C15-9B98-0B231C80F81C}";
+        public static string BucketFolderID = "{ADB6CA4F-03EF-4F47-B9AC-9CE2BA53FF97}";
         /// <summary>
         /// Sample method which calls a GraphQL endpoint.
         /// </summary>
@@ -81,7 +83,12 @@ namespace RaiXpToCloudMigrator.XmCloud
             return result.Data.createItem.item;
         }
 
-        internal static async Task<Created> CreateHiddenDataFolderEnglish(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string parentID)
+        internal static async Task<Created> CreateHiddenDataFolderEnglish(EnvironmentConfiguration env, string itemname, string parentID, CancellationToken cancellationToken)
+        {
+            // Await the result of CreateHiddenDataFolder to fix CS1998
+            return await CreateHiddenDataFolder(env, cancellationToken, itemname, parentID, "en");
+        }
+        internal static async Task<Created> CreateHiddenDataFolder(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string parentID, string language)
         {
             string graphqlendpoint = env.Host;
             if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
@@ -102,7 +109,7 @@ namespace RaiXpToCloudMigrator.XmCloud
                 "name: \"" + itemname + "\"" +
                 "\r\n templateId: \"{1C82E550-EBCD-4E5D-8ABD-D50D0809541E}\"" +
                 "\r\n parent: \"" + parentID + "\"" +
-                "\r\n language: \"en\"" +
+                "\r\n language: \""+ language + "\"" +
                 "\r\n fields: [" +
                 inputFieldFormat("__Hidden", "1") +
                "\r\n      ]\r\n    }\r\n  ) {\r\n    item {\r\n      itemId\r\n    }\r\n  }\r\n}",

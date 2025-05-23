@@ -4,7 +4,7 @@ using SitecoreCommander.Edge;
 
 namespace SitecoreCommander.Command
 {
-    internal static class DeleteSubItemsExcept
+    internal static class DeleteSubItems
     {
         public static async Task<bool> DeleteAsync(EnvironmentConfiguration env, string path, string targetParentPath, string[] excludeItemNames) {
             using (var cts = new CancellationTokenSource())
@@ -32,7 +32,7 @@ namespace SitecoreCommander.Command
                                 Console.WriteLine("ignore child -" + item.name);
                             } else {
                                 Console.WriteLine("found child -" + item.name);
-                                var result = await MoveItem.Move(env, cts.Token, item.path, targetParentPath);
+                                var result = await DeleteItem.Delete(env, cts.Token, item.path);
                             }
                         }
                     }

@@ -6,22 +6,35 @@ using SitecoreCommander.Edge;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Lib;
 using SitecoreCommander.RESTful;
-using SitecoreCommander.Wordpress;
+using SitecoreCommander.WordPress;
 
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
 var env = Login.GetSitecoreEnvironment();
 
+//Example upload media
+//var upload = await AddMedia.Create(env, CancellationToken.None, "/sitecore/media library/Project/test3/hello/test", "en", "test", @"C:\projects\SitecoreCommander\Test.jpg");
+
 //Example import from WordPress XML file
 var language = "en";
-var siteroot = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Home", language);
-if (siteroot == null)
+var sitecoreSite = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Site collection/Site", language);
+var siteHome = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Site collection/Site/Home", language);
+if (siteHome == null)
 {
-    Console.WriteLine("Site root not found");
-    return;
+    Console.WriteLine("Site Home item not found");
+     return;
 }
-var wp = new WordpressImport();
-await wp.ImportPostsAsync(env, siteroot, language, "{76036F5E-CBCE-46D1-AF0A-4143F9B557AA}", @"C:\projects\SitecoreCommander\WordPress-example.xml");
+var wp = new WordPressSampleImport();
 
+await wp.ImportPostsAsync(
+    env: env,
+    siteroot: sitecoreSite,
+    language: language,
+    defaulttemplateid: "{EA0C9A03-8A5B-402A-963D-0C2236DD080B}",
+    tagFolderPath: "/sitecore/content/Site collection/Site/Data/Tags",
+    mediaFolderPath: "/sitecore/media library/Project/Site collection",
+    filepath: @"./WordPress-example.xml",
+    overwrite: true
+);
 
 //Example create multiple items
 //  var parent = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Home/test");
