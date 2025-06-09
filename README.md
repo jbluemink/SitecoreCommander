@@ -66,3 +66,5 @@ Contain code for Authoring, Edge and RESTful Sitecore API.
 - 15 September Added methodes to help limiting the number of items under any given node to 100 or less, by moving to multiple subfolders
 - 8 November Added UnpublishLanguageFromSubtree
 - 18 November Added generiek create item
+- 23 May 2025 Added AddMedia, Delete Item and Delete Subitems Except
+- 9 june 2025 Added WordPress to Sitecore Import Example

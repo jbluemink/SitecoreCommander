@@ -369,7 +369,7 @@ namespace SitecoreCommander.WordPress
                         var tagFolderTemplateID = CreateFolderItem.TagFolderID;
                         if (tagFolder.Contains("/Lists"))
                         {
-                            tagFolderTemplateID = "{FC7AFAFE-CC4D-41F2-ABC8-8CB81A0393E9}";
+                            tagFolderTemplateID = Templates.CustomListFolderTemplateGuid;
                         }
                         var createdTagFolder = CreateFolderItem.CreateMap(env, CancellationToken.None, domain, tagFolderTemplateID, tagMainFolderId, language, [])
                                                                .GetAwaiter().GetResult();
@@ -387,7 +387,7 @@ namespace SitecoreCommander.WordPress
                     {
                         { "Title", tag }
                     };
-                    createdTag = AddItem.Create(env, CancellationToken.None, Helper.ToValidItemName(tag), "{AF0DB5DB-27C0-48AD-B414-EF077FC6F14D}", tagItemFolderId, language, fieldNameValues)
+                    createdTag = AddItem.Create(env, CancellationToken.None, Helper.ToValidItemName(tag), Templates.CustomListTagItemTemplateGuid, tagItemFolderId, language, fieldNameValues)
                                         .GetAwaiter().GetResult();
                 }
                 else
@@ -477,9 +477,7 @@ namespace SitecoreCommander.WordPress
             string placeholder = "/headless-main/column-1-2";
             if (posttype == "page")
             {
-                final += "<r uid=\"{656450E3-0226-4AFE-B292-81224FE92920}\"><p:da name=\"ds\" /></r><r uid=\"{31B59187-EFB4-4B56-92AB-4C8B89F7C336}\" p:after=\"r[@uid='{656450E3-0226-4AFE-B292-81224FE92920}']\" s:id=\"{E211C126-A5DF-41E5-A6D8-BA3B1452B11B}\" s:par=\"ColumnWidth1=%7BDDEE8959-4A62-499C-8332-5A81384FE61D%7D&amp;ColumnWidth2&amp;ColumnWidth3&amp;ColumnWidth4&amp;ColumnWidth5&amp;ColumnWidth6&amp;ColumnWidth7&amp;ColumnWidth8&amp;GridParameters=%7BF61E01E9-711A-4C99-AE30-4E28463E1DF7%7D&amp;SplitterSize=1&amp;EnabledPlaceholders=1&amp;FieldNames&amp;Styles1&amp;Styles2&amp;Styles3&amp;Styles4&amp;Styles5&amp;Styles6&amp;Styles7&amp;BackgroundImage&amp;Styles&amp;Styles8&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=2\" s:ph=\"headless-main\" />";
-                final += "<r uid=\"{36F7AE2A-9DB6-4544-8F49-CFF9CA2AB6DB}\" p:after=\"r[@uid='{31B59187-EFB4-4B56-92AB-4C8B89F7C336}']\" s:par=\"\" />";
-                final += "<r uid=\"{18ADD47D-6543-4B01-A3B2-5E601D5EE43A}\" p:after=\"*[1=2]\" s:id=\"{5822D916-BA2C-4EB6-97D6-1DD318C17A2F}\" s:par=\"FieldNames&amp;Styles=%7BB4B8B2E0-75C2-4811-A2AE-4D3F6FC4AB69%7D%7C%7B47AA6373-2F63-45DB-9BF6-1CA0206D1F95%7D&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=4\" s:ph=\"/headless-main/breadcrumb-1\" />";
+                //add eveything you need on every page here
             }
             if (posttype == "so_cpt_artikel")
             {
@@ -496,7 +494,8 @@ namespace SitecoreCommander.WordPress
             int count = 0;
             if (!string.IsNullOrWhiteSpace(content))
             {
-                final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"page:\" s:id=\"{0DD363B2-1F29-4718-B25D-F20A16512508}\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"/headless-main/sxa-banner/column-1-2\" />";
+                //add the current page as text component
+                final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"page:\" s:id=\""+ Templates.TextComponentRenderingGuid + "\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"/headless-main/sxa-banner/column-1-2\" />";
             }
             count = 1;
             foreach (var block in blocks)
@@ -508,34 +507,34 @@ namespace SitecoreCommander.WordPress
                     case "h3":
                     case "heading":
                         Console.WriteLine("Handling a heading, title block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Title" + count + "\" s:id=\"{7FFA6A4B-5BFE-4390-809B-36003E49D476}\" s:par=\"FieldNames=%7B193F7152-1E45-41BE-BE9C-E0D186307F49%7D&amp;Styles=%7BD26E71C2-937B-422C-85C6-DC3168D3DF38%7D&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\""+ placeholder+"\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Title" + count + "\" s:id=\""+ Templates.HeadingComponentRenderingGuid + "\" s:par=\"FieldNames=%7B193F7152-1E45-41BE-BE9C-E0D186307F49%7D&amp;Styles=%7BD26E71C2-937B-422C-85C6-DC3168D3DF38%7D&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\""+ placeholder+"\" />";
                         break;
                     case "p":
                     case "div":
                     case "list":
                     case "paragraph":
                         Console.WriteLine("Handling a paragraph block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Text" + count + "\" s:id=\"{0DD363B2-1F29-4718-B25D-F20A16512508}\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId="+count+ "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Text" + count + "\" s:id=\""+ Templates.TextComponentRenderingGuid + "\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId="+count+ "\" s:ph=\"" + placeholder + "\" />";
                         break;
                     case "sogutenberg/smallecontent":
                         Console.WriteLine("Handling a sogutenberg/smallecontent block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/RichText" + count + "\" s:id=\"{0DD363B2-1F29-4718-B25D-F20A16512508}\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/RichText" + count + "\" s:id=\""+ Templates.TextComponentRenderingGuid + "\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
                         break;
 
                     case "media-text":
                         Console.WriteLine("Handling an media-text block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/MediaText" + count + "\" s:id=\"{0DD363B2-1F29-4718-B25D-F20A16512508}\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/MediaText" + count + "\" s:id=\""+ Templates.TextComponentRenderingGuid + "\" s:par=\"FieldNames=%7BFAEF6224-3F5E-45FC-A20C-E2CA3174CD8E%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
                         break;
 
                     case "sogutenberg/quote":
                         Console.WriteLine("Handling an quote block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Quote" + count + "\" s:id=\"{71240D1B-B373-433A-AA86-64F1708A6673}\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Quote" + count + "\" s:id=\"" + Templates.QuoteComponentRenderingGuid + "\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
                         break;
                     case "sogutenberg/cta":
                         Console.WriteLine("Handling a cta block.");
 
                         // Add the main CTA block to final
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/CTA" + count + "\" s:id=\"{5E902729-4770-417A-A952-4D8CB8A75D06}\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/CTA" + count + "\" s:id=\"" + Templates.CTAComponentRenderingGuid + "\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
 
                         // Parse the inner HTML to extract buttons
                         var ctaDoc = new HtmlAgilityPack.HtmlDocument();
@@ -553,7 +552,7 @@ namespace SitecoreCommander.WordPress
                                 var buttonText = buttonNode.SelectSingleNode(".//a")?.InnerText ?? string.Empty;
 
                                 // Add extra string for this button
-                                final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/CTAButton" + count + "-" + i + "\" s:id=\"{74161E6B-3F72-4B5A-A768-D65B1A9FB28B}\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "0" + i + "\" s:ph=\"" + placeholder + "\" />";
+                                final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/CTAButton" + count + "-" + i + "\" s:id=\"" + Templates.CTAButtonComponentRenderingGuid + "\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "0" + i + "\" s:ph=\"" + placeholder + "\" />";
                             }
                         }
                         else
@@ -564,17 +563,17 @@ namespace SitecoreCommander.WordPress
                     case "figure":
                     case "image":
                         Console.WriteLine("Handling a image block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Image" + count + "\" s:id=\"{0C6154FC-4224-4902-9DA9-FA7DA74F9620}\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Image" + count + "\" s:id=\"" + Templates.ImageComponentRenderingGuid + "\" s:par=\"FieldNames=%7BF1D8A6AB-FD85-4343-BDED-10DD304B3B6A%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
                         break;
 
                     case "gallery":
                         Console.WriteLine("Handling a gallery block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Gallery" + count + "\" s:id=\"{D47B146C-6BE2-4E0A-B9FC-5ECFC2A8C541}\" s:par=\"FieldNames=%7BBE2CB9F9-69C1-45BA-8B1C-ACED2345E648%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Gallery" + count + "\" s:id=\"" + Templates.GalleryComponentRenderingGuid + "\" s:par=\"FieldNames=%7BBE2CB9F9-69C1-45BA-8B1C-ACED2345E648%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
                         break;
                     case "button":
                     case "buttons":
                         Console.WriteLine("Handling a button block.");
-                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Button" + count + "\" s:id=\"{FA98DBF9-224B-46D9-8E03-EA69B57229CD}\" s:par=\"FieldNames=%7BBE2CB9F9-69C1-45BA-8B1C-ACED2345E648%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                        final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Button" + count + "\" s:id=\"" + Templates.CTAButtonComponentRenderingGuid + "\" s:par=\"FieldNames=%7BBE2CB9F9-69C1-45BA-8B1C-ACED2345E648%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
                         break;
                     case "embed":
                         Console.WriteLine("Handling a embed block.");
@@ -583,7 +582,7 @@ namespace SitecoreCommander.WordPress
                         var providername = parsedAttributes?.GetValueOrDefault("providerNameSlug")?.ToString();
                         if (providername == "youtube")
                         {
-                            final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/YouTube" + count + "\" s:id=\"{C6A8C277-536E-46C4-BABE-6D92CA8838D0}\" s:par=\"FieldNames=%7BBE2CB9F9-69C1-45BA-8B1C-ACED2345E648%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
+                            final += "<r uid=\"" + Guid.NewGuid().ToString("B").ToUpper() + "\" s:ds=\"local:/Data/YouTube" + count + "\" s:id=\"" + Templates.YouTubeComponentRenderingGuid + "\" s:par=\"FieldNames=%7BBE2CB9F9-69C1-45BA-8B1C-ACED2345E648%7D&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=" + count + "\" s:ph=\"" + placeholder + "\" />";
                         } else
                         {
                             Console.WriteLine($"Unknown embed block type: {providername}");

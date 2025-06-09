@@ -15,6 +15,7 @@ var env = Login.GetSitecoreEnvironment();
 //var upload = await AddMedia.Create(env, CancellationToken.None, "/sitecore/media library/Project/test3/hello/test", "en", "test", @"C:\projects\SitecoreCommander\Test.jpg");
 
 //Example import from WordPress XML file
+//Install Wordpress/Demo headless site wordpress import.zip  Sitecore Package For Site Structure and page templsate
 var language = "en";
 var sitecoreSite = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Demo/Site", language);
 var siteHome = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Demo/Site/Home", language);
@@ -29,9 +30,9 @@ await wp.ImportPostsAsync(
     env: env,
     siteroot: sitecoreSite,
     language: language,
-    defaulttemplateid: "{EA0C9A03-8A5B-402A-963D-0C2236DD080B}",
+    defaulttemplateid: Templates.PageTemplateGuid,
     tagFolderPath: "/sitecore/content/Demo/Site/Data/Tags",
-    mediaFolderPath: "/sitecore/media library/Project/Demo",
+    mediaFolderPath: "/sitecore/media library/Project/Demo/Site",
     filepath: @"./WordPress-example.xml",
     overwrite: true
 );
