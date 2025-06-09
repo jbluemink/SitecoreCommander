@@ -16,8 +16,8 @@ var env = Login.GetSitecoreEnvironment();
 
 //Example import from WordPress XML file
 var language = "en";
-var sitecoreSite = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Site collection/Site", language);
-var siteHome = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Site collection/Site/Home", language);
+var sitecoreSite = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Demo/Site", language);
+var siteHome = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Demo/Site/Home", language);
 if (siteHome == null)
 {
     Console.WriteLine("Site Home item not found");
@@ -30,8 +30,8 @@ await wp.ImportPostsAsync(
     siteroot: sitecoreSite,
     language: language,
     defaulttemplateid: "{EA0C9A03-8A5B-402A-963D-0C2236DD080B}",
-    tagFolderPath: "/sitecore/content/Site collection/Site/Data/Tags",
-    mediaFolderPath: "/sitecore/media library/Project/Site collection",
+    tagFolderPath: "/sitecore/content/Demo/Site/Data/Tags",
+    mediaFolderPath: "/sitecore/media library/Project/Demo",
     filepath: @"./WordPress-example.xml",
     overwrite: true
 );

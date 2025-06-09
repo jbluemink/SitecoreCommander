@@ -67,6 +67,19 @@
 				<![CDATA[]]>
 			</wp:author_last_name>
 		</wp:author>
+		<wp:category>
+			<wp:term_id>61</wp:term_id>
+			<wp:category_nicename><![CDATA[test]]></wp:category_nicename>
+			<wp:category_parent><![CDATA[]]></wp:category_parent>
+			<wp:cat_name><![CDATA[Test]]></wp:cat_name>
+		</wp:category>
+		<wp:term>
+			<wp:term_id>101</wp:term_id>
+			<wp:term_taxonomy><![CDATA[post_places]]></wp:term_taxonomy>
+			<wp:term_slug><![CDATA[amsterdam]]></wp:term_slug>
+			<wp:term_parent><![CDATA[]]></wp:term_parent>
+			<wp:term_name><![CDATA[Amsterdam]]></wp:term_name>
+		</wp:term>
 		<generator>https://wordpress.org/?v=6.7.2</generator>
 		<item>
 			<title>
@@ -148,6 +161,88 @@
 			</wp:postmeta>
 		</item>
 		<item>
+			<title><![CDATA[media123]]></title>
+			<link>https://www.stockpick.nl/media/1368/output-edit.jpg</link>
+			<pubDate>Mon, 11 Dec 2023 13:47:39 +0000</pubDate>
+			<dc:creator><![CDATA[Beheerder]]></dc:creator>
+			<guid isPermaLink="false">https://www.stockpick.nl/media/1368/output-edit.jpg</guid>
+			<description></description>
+			<content:encoded><![CDATA[]]></content:encoded>
+			<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+			<wp:post_id>205794</wp:post_id>
+			<wp:post_date><![CDATA[2023-12-11 14:47:39]]></wp:post_date>
+			<wp:post_date_gmt><![CDATA[2023-12-11 13:47:39]]></wp:post_date_gmt>
+			<wp:post_modified><![CDATA[2023-12-11 14:47:39]]></wp:post_modified>
+			<wp:post_modified_gmt><![CDATA[2023-12-11 13:47:39]]></wp:post_modified_gmt>
+			<wp:comment_status><![CDATA[]]></wp:comment_status>
+			<wp:ping_status><![CDATA[closed]]></wp:ping_status>
+			<wp:post_name><![CDATA[output-edit]]></wp:post_name>
+			<wp:status><![CDATA[inherit]]></wp:status>
+			<wp:post_parent>205781</wp:post_parent>
+			<wp:menu_order>0</wp:menu_order>
+			<wp:post_type><![CDATA[attachment]]></wp:post_type>
+			<wp:post_password><![CDATA[]]></wp:post_password>
+			<wp:is_sticky>0</wp:is_sticky>
+							<wp:attachment_url><![CDATA[https://www.stockpick.nl/media/1368/output-edit.jpg]]></wp:attachment_url>
+												<wp:postmeta>
+			<wp:meta_key><![CDATA[_wp_attached_file]]></wp:meta_key>
+			<wp:meta_value><![CDATA[media123]]></wp:meta_value>
+			</wp:postmeta>
+								<wp:postmeta>
+			<wp:meta_key><![CDATA[_wp_attachment_metadata]]></wp:meta_key>
+			<wp:meta_value><![CDATA[a:7:{s:5:"width";i:2048;s:6:"height";i:1024;s:4:"file";s:65:"media123";s:8:"filesize";i:367746;s:5:"sizes";a:6:{s:6:"medium";a:5:{s:4:"file";s:73:"media123.jpg";s:5:"width";i:500;s:6:"height";i:250;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:49379;}s:5:"large";a:5:{s:4:"file";s:74:"20231018_media123-1500x750.jpg";s:5:"width";i:1500;s:6:"height";i:750;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:362451;}s:9:"thumbnail";a:5:{s:4:"file";s:73:"20231018_media123-300x300.jpg";s:5:"width";i:300;s:6:"height";i:300;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:34571;}s:12:"medium_large";a:5:{s:4:"file";s:73:"20231018_media123.jpg";s:5:"width";i:768;s:6:"height";i:384;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:106470;}s:9:"1536x1536";a:5:{s:4:"file";s:74:"20231018_media123-1536x768.jpg";s:5:"width";i:1536;s:6:"height";i:768;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:374336;}s:9:"2048x2048";a:5:{s:4:"file";s:53:"20231018_media123-2048x1508.jpg";s:5:"width";i:2048;s:6:"height";i:1508;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:1010499;}}s:10:"image_meta";a:12:{s:8:"aperture";s:3:"6.3";s:6:"credit";s:24:"Marc Blommaert copyright";s:6:"camera";s:9:"ILCE-7RM3";s:7:"caption";s:0:"";s:17:"created_timestamp";s:10:"1697631039";s:9:"copyright";s:24:"Copyright Jan";s:12:"focal_length";s:2:"34";s:3:"iso";s:3:"640";s:13:"shutter_speed";s:5:"0.001";s:5:"title";s:0:"";s:11:"orientation";s:1:"1";s:8:"keywords";a:0:{}}s:14:"original_image";s:43:"20231018_media123.jpg";}]]></wp:meta_value>
+			</wp:postmeta>
+								<wp:postmeta>
+			<wp:meta_key><![CDATA[tiny_compress_images]]></wp:meta_key>
+			<wp:meta_value></wp:meta_value>
+			</wp:postmeta>
+								<wp:postmeta>
+			<wp:meta_key><![CDATA[_wp_attachment_backup_sizes]]></wp:meta_key>
+			<wp:meta_value></wp:meta_value>
+			</wp:postmeta>
+		</item>
+		<item>
+			<title><![CDATA[media326]]></title>
+			<link>https://www.stockpick.nl/media/1362/unpublish-sitecore-powershell.jpg</link>
+			<pubDate>Mon, 11 Dec 2023 13:47:39 +0000</pubDate>
+			<dc:creator><![CDATA[Beheerder]]></dc:creator>
+			<guid isPermaLink="false">https://www.stockpick.nl/media/1362/unpublish-sitecore-powershell.jpg</guid>
+			<description></description>
+			<content:encoded><![CDATA[]]></content:encoded>
+			<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+			<wp:post_id>326</wp:post_id>
+			<wp:post_date><![CDATA[2023-12-11 14:47:39]]></wp:post_date>
+			<wp:post_date_gmt><![CDATA[2023-12-11 13:47:39]]></wp:post_date_gmt>
+			<wp:post_modified><![CDATA[2023-12-11 14:47:39]]></wp:post_modified>
+			<wp:post_modified_gmt><![CDATA[2023-12-11 13:47:39]]></wp:post_modified_gmt>
+			<wp:comment_status><![CDATA[]]></wp:comment_status>
+			<wp:ping_status><![CDATA[closed]]></wp:ping_status>
+			<wp:post_name><![CDATA[output-edit]]></wp:post_name>
+			<wp:status><![CDATA[inherit]]></wp:status>
+			<wp:post_parent>205781</wp:post_parent>
+			<wp:menu_order>0</wp:menu_order>
+			<wp:post_type><![CDATA[attachment]]></wp:post_type>
+			<wp:post_password><![CDATA[]]></wp:post_password>
+			<wp:is_sticky>0</wp:is_sticky>
+			<wp:attachment_url><![CDATA[https://www.stockpick.nl/media/1362/unpublish-sitecore-powershell.jpg]]></wp:attachment_url>
+			<wp:postmeta>
+				<wp:meta_key><![CDATA[_wp_attached_file]]></wp:meta_key>
+				<wp:meta_value><![CDATA[media123]]></wp:meta_value>
+			</wp:postmeta>
+			<wp:postmeta>
+				<wp:meta_key><![CDATA[_wp_attachment_metadata]]></wp:meta_key>
+				<wp:meta_value></wp:meta_value>
+			</wp:postmeta>
+			<wp:postmeta>
+				<wp:meta_key><![CDATA[tiny_compress_images]]></wp:meta_key>
+				<wp:meta_value></wp:meta_value>
+			</wp:postmeta>
+			<wp:postmeta>
+				<wp:meta_key><![CDATA[_wp_attachment_backup_sizes]]></wp:meta_key>
+				<wp:meta_value></wp:meta_value>
+			</wp:postmeta>
+		</item>
+		<item>
 			<title>
 				<![CDATA[Stockpick]]>
 			</title>
@@ -159,7 +254,7 @@
 			<guid isPermaLink="false">https://www.stockpick.nl/?page_id=6</guid>
 			<description></description>
 			<content:encoded>
-				<![CDATA[empty]]>
+				<![CDATA[]]>
 			</content:encoded>
 			<excerpt:encoded>
 				<![CDATA[]]>
@@ -451,12 +546,66 @@
 			<guid isPermaLink="false">https://www.stockpick.nl/?page_id=7</guid>
 			<description></description>
 			<content:encoded>
-				<![CDATA[empty]]>
+				<![CDATA[<!-- wp:sogutenberg/smallecontent -->
+<div class="wp-block-sogutenberg-smallecontent small-single-column"><!-- wp:heading -->
+<h2 class="wp-block-heading" id="h-test1">Test titel</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Onze <a href="/">link</a> Lorum ipsum.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":205794,"width":"715px","height":"529px","sizeSlug":"medium","linkDestination":"none","className":"is-style-default"} -->
+<figure class="wp-block-image size-medium is-resized is-style-default"><img src="https://www.stockpick.nl/media/1368/output-edit.jpg" alt="" class="wp-image-205794" style="width:715px;height:529px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading" id="h-tes2">Heading</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>hello this is my content</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:sogutenberg/smallecontent -->
+
+<!-- wp:sogutenberg/quote {"naam":"Harm Boer","functie":"Director","quote":"\u003cem\u003e“We love content migration","imageUrl1":"https://www.stockpick.nl/media/1362/unpublish-sitecore-powershell.jpg","imageThumb1":"https://www.stockpick.nl/media/1362/unpublish-sitecore-powershell.jpg","imageID1":8164} /-->
+
+<!-- wp:media-text {"align":"wide","mediaPosition":"right","mediaId":326,"mediaLink":"/","mediaType":"image","className":"is-style-with-background"} -->
+<div class="wp-block-media-text alignwide has-media-on-the-right is-stacked-on-mobile is-style-with-background"><div class="wp-block-media-text__content"><!-- wp:heading {"level":3,"placeholder":"Title.."} -->
+<h3 class="wp-block-heading" id="h-test3">Another heading</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>More contentn.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/">Read more</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div><figure class="wp-block-media-text__media"><img src="https://www.stockpick.nl/media/1361/content-editor-warning-media.jpg" alt="Editors" class="wp-image-326 size-full"/></figure></div>
+<!-- /wp:media-text -->
+
+<!-- wp:sogutenberg/smallecontent -->
+<div class="wp-block-sogutenberg-smallecontent small-single-column"><!-- wp:sogutenberg/cta -->
+<div class=" wp-block-sogutenberg-cta cta-blok"><!-- wp:heading {"level":3,"placeholder":"Title.."} -->
+<h3 class="wp-block-heading" id="h-test4">Sogutenberg block title</h3>
+<!-- /wp:heading -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button {"className":"aligncenter"} -->
+<div class="wp-block-button aligncenter"><a class="wp-block-button__link wp-element-button" href="/">Link</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div>
+<!-- /wp:sogutenberg/cta --></div>
+<!-- /wp:sogutenberg/smallecontent -->]]>
 			</content:encoded>
 			<excerpt:encoded>
 				<![CDATA[]]>
 			</excerpt:encoded>
 			<wp:post_id>7</wp:post_id>
+			<category domain="category" nicename="test"><![CDATA[Test]]></category>
+			<category domain="post_places" nicename="amsterdam"><![CDATA[Amsterdam]]></category>
 			<wp:post_date>
 				<![CDATA[2022-04-06 11:15:00]]>
 			</wp:post_date>

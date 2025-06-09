@@ -7,7 +7,13 @@ namespace SitecoreCommander.Login
 {
     internal class Request
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
+        //private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new HttpClient(
+            new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            }
+        );
 
         /// <summary>
         /// Calls a specified GraphQL endpoint with the specified query and variables.

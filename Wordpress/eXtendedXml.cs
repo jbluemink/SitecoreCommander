@@ -27,7 +27,6 @@ namespace WordPressXmlImport
         public string? YoastTitle { get; set; }
         public string? YoastMetaDescription { get; set; }
         public int? MediaThumbnailId { get; set; }
-        public List<(string Title, string Text)> ProjectDetails { get; set; } = new();
         public string SitecoreItemName =>
     Slug.Length > 100
         ? Slug.Substring(0, 100).Replace("%", string.Empty)
@@ -70,18 +69,6 @@ namespace WordPressXmlImport
                         postMetas.FirstOrDefault(m => (string?)m.Element(wpNs + "meta_key") == key)?
                                  .Element(wpNs + "meta_value")?.Value;
 
-                    // Extract project details
-                    var projectDetails = new List<(string Title, string Text)>();
-                    for (int i = 1; i <= 6; i++) // max 6 projecttitels en teksten
-                    {
-                        var title = GetMetaValue($"_projectTitel{i}") ?? string.Empty;
-                        var text = GetMetaValue($"_projectTekst{i}") ?? string.Empty;
-
-                        if (!string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(text))
-                        {
-                            projectDetails.Add((title, text));
-                        }
-                    }
 
                     return new WordPressPost
                     {
@@ -108,10 +95,9 @@ namespace WordPressXmlImport
                         YoastTitle = GetMetaValue("_yoast_wpseo_title"),
                         YoastMetaDescription = GetMetaValue("_yoast_wpseo_metadesc"),
                         MediaThumbnailId = int.TryParse(GetMetaValue("_thumbnail_id"), out var thumbnailId) ? (int?)thumbnailId : null,
-                        ProjectDetails = projectDetails // Add projectdetails
                     };
                 })
-                .Where(p => (p.PostType == "post" || p.PostType == "page" || p.PostType == "so_cpt_press" || p.PostType == "so_cpt_projects" || p.PostType == "so_cpt_artikel") && p.Status == "publish") // Filter as needed
+                .Where(p => (p.PostType == "post" || p.PostType == "page" || p.PostType == "so_cpt_press" || p.PostType == "so_cpt_artikel") && p.Status == "publish") // Filter as needed
                 .OrderBy(p => p.Link) // Sort by Link
                 .ToList();
 

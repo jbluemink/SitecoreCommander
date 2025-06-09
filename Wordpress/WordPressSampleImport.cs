@@ -304,12 +304,6 @@ namespace SitecoreCommander.WordPress
         {
             var mapping = new Dictionary<string, string>
             {
-                { "project_categories", "ProjectCategories" },
-                { "project_locations", "Locations" },
-                { "project_maincategories", "ProjectMainCategories" },
-                { "project_provinces", "Provinces" },
-                { "project_vestiging", "Branches" },
-                { "project_woonoplossingen", "ProjectHousingSolutions" },
                 { "artikel_categories", "PublicationCategories" },
                 { "categorie", "PublicationCategories" },
                 { "press_categories", "PublicationCategories" },
@@ -480,11 +474,6 @@ namespace SitecoreCommander.WordPress
         private string CreateFinalLayout(string posttype, string content, List<WordPressBlock> blocks)
         {
             string final = "<r xmlns:p=\"p\" xmlns:s=\"s\" p:p=\"1\"><d id=\"{FE5D7FDF-89C0-4D99-9AA3-B5FBD009C9F3}\">";
-            //if (!string.IsNullOrEmpty(headerMediaId))
-            //{
-            //    var headerGuid = Guid.NewGuid();
-            //    final += "<r uid=\"" + headerGuid.ToString("B").ToUpper() + "\" s:ds=\"local:/Data/Header\" s:id=\"{CE9AAD09-C9EB-4346-859E-BC82BA06FF46}\" s:par=\"FieldNames=%7BB649E2A0-0436-4241-BFF0-2BDA6C525E0F%7D&amp;Styles=%7B505DE015-291F-42B2-9E73-BF63DB4A7CA8%7D%7C%7BB6FC6F6E-2F1D-41AC-9F92-4D0331A0ED5B%7D%7C%7B78109721-7EC4-471D-806C-046B624EA2FA%7D%7C%7B0E6FBAB3-72A5-4917-B2C6-DB9971074115%7D%7C%7B7F906E23-D183-4232-8868-F5D6243E4D09%7D%7C%7BC0077A83-723E-4524-9F1A-40EFF50BF05D%7D%7C%7B11BF7553-7A13-405A-8619-1F80B43A7443%7D&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=2\" s:ph=\"headless-header\" />";
-            //}
             string placeholder = "/headless-main/column-1-2";
             if (posttype == "page")
             {
@@ -503,10 +492,6 @@ namespace SitecoreCommander.WordPress
             else if (posttype == "post")
             {
                 placeholder = "/headless-main/sxa-newsheader/publicationheader-1";
-            }
-            else if (posttype == "so_cpt_projects")
-            {
-                placeholder = "/headless-main/sxa-projectheader/projectheader-1";
             }
             int count = 0;
             if (!string.IsNullOrWhiteSpace(content))
@@ -638,9 +623,10 @@ namespace SitecoreCommander.WordPress
                         Console.WriteLine("Handling a heading, title block");
                         var fieldNameValuesHeading = new Dictionary<string, string>
                         {
-                            { "Title", Helper.StripHtmlTags(block.InnerHtml) },
+                            //{ "Title", Helper.StripHtmlTags(block.InnerHtml) },
+                            { "Text", Helper.StripHtmlTags(block.InnerHtml) },
                         };
-                        var updated = AddItem.Create(env, CancellationToken.None, "Title" + count, "{446968E2-DE85-487D-B24C-9111802F8719}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesHeading);
+                        var updated = AddItem.Create(env, CancellationToken.None, "Title" + count, Templates.HeadingComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesHeading);
                         break;
                     case "p":
                     case "div":
@@ -650,9 +636,9 @@ namespace SitecoreCommander.WordPress
                         Console.WriteLine("Handling a paragraph block.");
                         var fieldNameValuesText = new Dictionary<string, string>
                         {
-                            { "Content", block.InnerHtml },
+                            { "Text", block.InnerHtml },
                         };
-                        var updated2 = AddItem.Create(env, CancellationToken.None, "Text" + count, "{2DCC7FA8-611B-4823-84AA-1C07D67789C7}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesText);
+                        var updated2 = AddItem.Create(env, CancellationToken.None, "Text" + count, Templates.TextComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesText);
                         break;
                     case "sogutenberg/smallecontent":
                         Console.WriteLine("Handling a sogutenberg/smallecontent block.");
@@ -666,9 +652,9 @@ namespace SitecoreCommander.WordPress
                         var textcontent = renderer.Render(block);
                         var fieldNameValuesText3 = new Dictionary<string, string>
                         {
-                            { "Content", Helper.StripHtmlTags(textcontent) },
+                            { "Text", Helper.StripHtmlTags(textcontent) },
                         };
-                        var updated3 = AddItem.Create(env, CancellationToken.None, "MediaText" + count, "{2DCC7FA8-611B-4823-84AA-1C07D67789C7}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesText3);
+                        var updated3 = AddItem.Create(env, CancellationToken.None, "MediaText" + count, Templates.TextComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesText3);
                         break;
 
                     case "media-text":
@@ -683,9 +669,9 @@ namespace SitecoreCommander.WordPress
                         var mediarichText = mtrenderer.Render(block);
                         var fieldNameValuesMediaText3 = new Dictionary<string, string>
                         {
-                            { "Content", Helper.StripHtmlTags(mediarichText) },
+                            { "Text", Helper.StripHtmlTags(mediarichText) },
                         };
-                        var updatedMediaText = AddItem.Create(env, CancellationToken.None, "MediaText" + count, "{2DCC7FA8-611B-4823-84AA-1C07D67789C7}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesMediaText3);
+                        var updatedMediaText = AddItem.Create(env, CancellationToken.None, "MediaText" + count, Templates.TextComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesMediaText3);
                         break;
                     case "sogutenberg/quote":
                         Console.WriteLine("Handling a quote block.");
@@ -709,7 +695,7 @@ namespace SitecoreCommander.WordPress
                             { "Text", parsedAttributes?.GetValueOrDefault("quote") ?? string.Empty },
                             { "Image", mediastring },
                         };
-                        var updatedQuote = AddItem.Create(env, CancellationToken.None, "Quote" + count, "{40D5C31B-AA56-4005-8888-419A88566C4E}", datafolder.itemIdEnclosedInBraces, language, fieldNameQuote);
+                        var updatedQuote = AddItem.Create(env, CancellationToken.None, "Quote" + count, Templates.QuoteComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameQuote);
                         break; // Add this break statement to prevent fall-through
                     case "sogutenberg/cta":
                         Console.WriteLine("Handling a sogutenberg/cta block.");
@@ -734,7 +720,7 @@ namespace SitecoreCommander.WordPress
                             { "Link",firstbuttonlink }
                         };
 
-                        var updatedCTA = AddItem.Create(env, CancellationToken.None, "CTA" + count, "{5E902729-4770-417A-A952-4D8CB8A75D06}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesCTA);
+                        var updatedCTA = AddItem.Create(env, CancellationToken.None, "CTA" + count, Templates.CTAComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesCTA);
                         if (updatedCTA != null)
                         {
                             Console.WriteLine($"Created CTA data source: {updatedCTA.Result.itemIdEnclosedInBraces}");
@@ -754,7 +740,7 @@ namespace SitecoreCommander.WordPress
                                     { "Link", "<link text=\""+buttonText+"\" linktype=\"external\" url=\""+buttonLink+"\" anchor=\"\" target=\"\" />" }
                                 };
 
-                                var updatedButton = AddItem.Create(env, CancellationToken.None, "CTAButton" + count + "-" + i, "{99D3F111-C74A-4FAF-A2FE-EE3FCD3205EE}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesButton);
+                                var updatedButton = AddItem.Create(env, CancellationToken.None, "CTAButton" + count + "-" + i, Templates.CTAButtonComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesButton);
                                 if (updatedButton != null)
                                 {
                                     Console.WriteLine($"Created CTA Button data source: {updatedButton.Result.itemIdEnclosedInBraces}");
@@ -804,7 +790,7 @@ namespace SitecoreCommander.WordPress
                                     { "ImageCaption", alt }
                                 };
 
-                                var updatedImage = AddItem.Create(env, CancellationToken.None, "Image" + count, "{712955F5-4492-429A-A095-B9C4BAE8668A}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesImage);
+                                var updatedImage = AddItem.Create(env, CancellationToken.None, "Image" + count, Templates.ImageComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesImage);
                                 if (updatedImage != null)
                                 {
                                     Console.WriteLine($"Created image data source: {updatedImage.Result.itemIdEnclosedInBraces}");
@@ -830,7 +816,7 @@ namespace SitecoreCommander.WordPress
                         {
                             { "Title", "" },
                         };
-                        var galleryupdated = AddItem.Create(env, CancellationToken.None, "Gallery" + count, "{0FBFBE39-65A9-45B1-971B-8D7846682F96}", datafolder.itemIdEnclosedInBraces, language, fieldgallery).GetAwaiter().GetResult();
+                        var galleryupdated = AddItem.Create(env, CancellationToken.None, "Gallery" + count, Templates.GalleryComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldgallery).GetAwaiter().GetResult();
                         var imagecount = 0;
                         foreach(var image  in gallery.Images)
                         {
@@ -843,7 +829,7 @@ namespace SitecoreCommander.WordPress
                                     { "Image", "<image mediaid=\"" + mediaId + "\" />" },
                                     { "ImageCaption", image.Alt },
                                 };
-                                var updated4 = AddItem.Create(env, CancellationToken.None, "Image" + imagecount, "{712955F5-4492-429A-A095-B9C4BAE8668A}", galleryupdated.itemIdEnclosedInBraces, language, fieldNameValuesImage);
+                                var updated4 = AddItem.Create(env, CancellationToken.None, "Image" + imagecount, Templates.ImageComponentTemplateGuid, galleryupdated.itemIdEnclosedInBraces, language, fieldNameValuesImage);
                             }
                         }
                         break;
@@ -869,7 +855,7 @@ namespace SitecoreCommander.WordPress
                         {
                             { "Link", "<link text=\""+singlebuttonText+"\" linktype=\"external\" url=\""+singlebuttonLink+"\" anchor=\"\" target=\"\" />" }
                         };
-                        var updatedlink = AddItem.Create(env, CancellationToken.None, "Button" + count, "{99D3F111-C74A-4FAF-A2FE-EE3FCD3205EE}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesSingleButton);
+                        var updatedlink = AddItem.Create(env, CancellationToken.None, "Button" + count, Templates.CTAButtonComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesSingleButton);
                         break;
                     case "embed":
                         Console.WriteLine("Handling a embed block.");
@@ -885,7 +871,7 @@ namespace SitecoreCommander.WordPress
                                 { "BaseUrl", "https://www.youtube.com/embed/" },
                                 { "VideoId", youtubeid   },
                             };
-                            var updatedyoutube = AddItem.Create(env, CancellationToken.None, "YouTube" + count, "{B76374AE-06B6-425D-A1D0-6087BA140CD3}", datafolder.itemIdEnclosedInBraces, language, fieldNameValuesYoutube);
+                            var updatedyoutube = AddItem.Create(env, CancellationToken.None, "YouTube" + count, Templates.YouTubeComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesYoutube);
                         }
                         else
                         {
@@ -940,19 +926,6 @@ namespace SitecoreCommander.WordPress
 
             return input;
         }
-
-        private string ConvertProjectDetailsToUrlParameters(List<(string Title, string Text)> projectDetails)
-        {
-            if (projectDetails == null || projectDetails.Count == 0)
-                return string.Empty;
-
-            var parameters = projectDetails
-                .Where(detail => !string.IsNullOrWhiteSpace(detail.Title) && !string.IsNullOrWhiteSpace(detail.Text))
-                .Select(detail => $"{Uri.EscapeDataString(detail.Title)}={Uri.EscapeDataString(detail.Text)}");
-
-            return string.Join("&", parameters);
-        }
-
 
         private List<WordPressMedia> mediaPosts = new List<WordPressMedia>();
         public async Task ImportPostsAsync(EnvironmentConfiguration env, ResultGetItem siteroot, string language, string defaulttemplateid, string mediaFolderPath, string tagFolderPath, string filepath, bool overwrite)
@@ -1013,26 +986,7 @@ namespace SitecoreCommander.WordPress
                     var tagListPressPlaces = new List<string?>();
                     foreach (var tagitem in post.Categories)
                     {
-                        if (tagitem.Domain.StartsWith("project_maincategories"))
-                        {
-                            tagListProject_maincategories.Add(GetOrCreatListTag(tagitem.Domain, tagitem.Name, tagFolderPath, language, env));
-                        } else if (tagitem.Domain.StartsWith("project_categories"))
-                        {
-                            tagListProject_categories.Add(GetOrCreatListTag(tagitem.Domain, tagitem.Name, tagFolderPath, language, env));
-                        }
-                        else if (tagitem.Domain.StartsWith("project_vestiging"))
-                        {
-                            tagListProject_vestigings.Add(GetOrCreatListTag(tagitem.Domain, tagitem.Name, tagFolderPath, language, env));
-                        }
-                        else if (tagitem.Domain.StartsWith("project_locations"))
-                        {
-                            tagListProject_locations.Add(GetOrCreatListTag(tagitem.Domain, tagitem.Name, tagFolderPath, language, env));
-                        }
-                        else if (tagitem.Domain.StartsWith("project_woonoplossingen"))
-                        {
-                            tagListProject_woonoplossingen.Add(GetOrCreatListTag(tagitem.Domain, tagitem.Name, tagFolderPath, language, env));
-                        }
-                        else if (tagitem.Domain.StartsWith("press_places"))
+                       if (tagitem.Domain.StartsWith("press_places"))
                         {
                             tagListPressPlaces.Add(GetOrCreatListTag(tagitem.Domain, tagitem.Name, tagFolderPath, language, env));
                         }
@@ -1088,7 +1042,7 @@ namespace SitecoreCommander.WordPress
                     else if (post.PostType == "page")
                     {
                         //page
-                        templateid = "{EA0C9A03-8A5B-402A-963D-0C2236DD080B}";
+                        templateid = Templates.PageTemplateGuid;
                         pagetype = "{04EA598F-13D9-450A-8F3B-25D0A8711484}";
                     }
                     else if (post.PostType == "so_cpt_press")
@@ -1114,33 +1068,22 @@ namespace SitecoreCommander.WordPress
                     var fieldNameValues = new Dictionary<string, string>
                     {
                         { "Title", title },
-                        { templateid == "{76036F5E-CBCE-46D1-AF0A-4143F9B557AA}" ? "Text" : "Content", content },
+                        { "Content", content },
                         { "__Created", post.PostDate.ToString("yyyyMMdd'T'HHmmss'Z'") },
                         { "SxaTags", tags },
-                        { "MetaTitle", yoastTitel},
+                        //{ "MetaTitle", yoastTitel},
                         { "NavigationTitle", title },
-                        { "MetaDescription", description},
-                        { "Image","<image mediaid=\""+thubnaimImgSitecoreId+ "\" />"  },
-                        { "MetaImage","<image mediaid=\""+thubnaimImgSitecoreId+ "\" />"  },
-                        { "OpenGraphDescription", description},
-                        { "OpenGraphTitle", yoastTitel},
-                        { "PageType", pagetype },
-                        { "OpenGraphImageUrl","<image mediaid=\""+thubnaimImgSitecoreId+ "\" />"  },
+                        //{ "MetaDescription", description},
+                        //{ "Image","<image mediaid=\""+thubnaimImgSitecoreId+ "\" />"  },
+                        //{ "MetaImage","<image mediaid=\""+thubnaimImgSitecoreId+ "\" />"  },
+                        //{ "OpenGraphDescription", description},
+                        //{ "OpenGraphTitle", yoastTitel},
+                        //{ "PageType", pagetype },
+                        //{ "OpenGraphImageUrl","<image mediaid=\""+thubnaimImgSitecoreId+ "\" />"  },
                         { "__Created by", post.Creator },
                         { "__Final Renderings", CreateFinalLayout(post.PostType, content, blocks)  }
                     };
 
-                    if (post.PostType == "so_cpt_projects") {
-                        fieldNameValues.Add("Properties", ConvertProjectDetailsToUrlParameters(post.ProjectDetails));
-                        fieldNameValues.Add("MainCategories", string.Join("|", tagListProject_maincategories.Where(tag => !string.IsNullOrEmpty(tag))));
-
-                        fieldNameValues.Add("Categories", string.Join("|", tagListProject_categories.Where(tag => !string.IsNullOrEmpty(tag))));
-
-                        fieldNameValues.Add("Branches", string.Join("|", tagListProject_vestigings.Where(tag => !string.IsNullOrEmpty(tag))));
-                        fieldNameValues.Add("Locations", string.Join("|", tagListProject_locations.Where(tag => !string.IsNullOrEmpty(tag))));
-                        fieldNameValues.Add("ProjectHousingSolutions", string.Join("|", tagListProject_woonoplossingen.Where(tag => !string.IsNullOrEmpty(tag))));
-                        fieldNameValues.Add("Date", post.PostDate.ToString("yyyyMMdd'T'HHmmss'Z'"));
-                    }
                     if (isNewPressPost)
                     {
                         fieldNameValues.Add("Date", post.PostDate.ToString("yyyyMMdd'T'HHmmss'Z'"));
@@ -1149,7 +1092,7 @@ namespace SitecoreCommander.WordPress
                         fieldNameValues.Add("Locations", string.Join("|", tagListPressPlaces.Where(tag => !string.IsNullOrEmpty(tag))));
                     }
 
-                        var parentPath = GetParentPath("/Home" + post.Link.TrimEnd('/'));
+                    var parentPath = GetParentPath("/Home" + post.Link.TrimEnd('/'));
                     if (parentPath == null)
                     {
                         throw new InvalidOperationException($"parentPath could not be resolved for path: {parentPath}");
@@ -1228,7 +1171,7 @@ namespace SitecoreCommander.WordPress
                     }
                 }
             }
-            Console.WriteLine("Ended in a good way......: ");
+            Console.WriteLine("Imported Ended all selected records are processed. see the the above ,Logging for details ");
         }
             
     }

@@ -46,6 +46,10 @@ namespace SitecoreCommander.Authoring
             if (result.Errors?.Count > 0)
             {
                 Console.WriteLine($"GraphQL returned errors:\n{string.Join("\n", result.Errors.Select(x => $"  - {x.Message}"))}");
+                if (result.Errors.FirstOrDefault().Message == "The specified key is not a valid size for this algorithm.")
+                {
+                    Console.WriteLine("TIP: Check if the GraphQL.UploadMediaOptions.EncryptionKey setting has a value. For example: <setting name=\"GraphQL.UploadMediaOptions.EncryptionKey\" value=\"432A462D4A614E64\" />");
+                }
                 return null;
             }
 
