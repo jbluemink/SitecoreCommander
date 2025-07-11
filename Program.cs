@@ -12,7 +12,7 @@ using SitecoreCommander.WordPress;
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
 var env = Login.GetSitecoreEnvironment();
 
-//Examplde replace field in subtree
+//Example replace field in subtree
 var result = ReplaceFieldFromSubtree.ReplaceAsync(env, "/sitecore/content", "en", "Title", "&nbsp;", " ", "Sample Item").GetAwaiter().GetResult();
 
 

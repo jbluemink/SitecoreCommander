@@ -68,6 +68,7 @@ Contain code for Authoring, Edge and RESTful Sitecore API.
 - 18 November Added generiek create item
 - 23 May 2025 Added AddMedia, Delete Item and Delete Subitems Except
 - 9 june 2025 Added WordPress to Sitecore Import Example
+- 11 july 2025 Added Replace Field method
 
 ### Error fixing
 
