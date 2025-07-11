@@ -1,6 +1,7 @@
 ﻿using RaiXpToCloudMigrator.XmCloud;
 using SitecoreCommander;
 using SitecoreCommander.Authoring;
+using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Command;
 using SitecoreCommander.Edge;
 using SitecoreCommander.Edge.Model;
@@ -11,12 +12,16 @@ using SitecoreCommander.WordPress;
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
 var env = Login.GetSitecoreEnvironment();
 
+//Examplde replace field in subtree
+var result = ReplaceFieldFromSubtree.ReplaceAsync(env, "/sitecore/content", "en", "Title", "&nbsp;", " ", "Sample Item").GetAwaiter().GetResult();
+
+
 //Example upload media
 //var upload = await AddMedia.Create(env, CancellationToken.None, "/sitecore/media library/Project/test3/hello/test", "en", "test", @"C:\projects\SitecoreCommander\Test.jpg");
 
 //Example import from WordPress XML file
 //Install Wordpress/Demo headless site wordpress import.zip  Sitecore Package For Site Structure and page templsate
-var language = "en";
+/*var language = "en";
 var sitecoreSite = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Demo/Site", language);
 var siteHome = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Demo/Site/Home", language);
 if (siteHome == null)
@@ -35,7 +40,7 @@ await wp.ImportPostsAsync(
     mediaFolderPath: "/sitecore/media library/Project/Demo/Site",
     filepath: @"./WordPress-example.xml",
     overwrite: true
-);
+);*/
 
 //Example create multiple items
 //  var parent = await GetItem.GetSitecoreItem(env, CancellationToken.None, "/sitecore/content/Home/test");

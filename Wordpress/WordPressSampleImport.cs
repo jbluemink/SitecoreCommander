@@ -653,7 +653,7 @@ namespace SitecoreCommander.WordPress
                         {
                             { "Text", Helper.StripHtmlTags(textcontent) },
                         };
-                        var updated3 = AddItem.Create(env, CancellationToken.None, "MediaText" + count, Templates.TextComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesText3);
+                        var updated3 = AddItem.Create(env, CancellationToken.None, "RichText" + count, Templates.TextComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesText3);
                         break;
 
                     case "media-text":

@@ -18,7 +18,7 @@ namespace SitecoreCommander.Authoring
             Console.WriteLine($"Try to update __Hide version field for item {itemId} version {version}");
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<UpdateItem>(
+            var result = await Request.CallGraphQLAsync<UpdateItemResponse>(
                 new Uri(graphqlendpoint),
                 HttpMethod.Post,
                 accessToken,

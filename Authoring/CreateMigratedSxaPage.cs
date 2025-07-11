@@ -94,7 +94,7 @@ namespace SitecoreCommander.Authoring
             Console.WriteLine("Try to Add version data for item " + itemId);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<UpdateItem>(
+            var result = await Request.CallGraphQLAsync<UpdateItemResponse>(
                 new Uri(graphqlendpoint),
                 HttpMethod.Post,
                 accessToken,

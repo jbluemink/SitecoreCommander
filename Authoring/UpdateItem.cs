@@ -6,18 +6,22 @@ using System.Net;
 namespace SitecoreCommander.Authoring
 { 
     //Example createpage, based on itemService item (usecase content migration)
-    internal class UpdateItemSecurity
+    internal class UpdateItem
     {
 
-        internal static async Task<Created> UpdateItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string securityString, string language)
+        internal static async Task<Created> Update(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string language, Dictionary<string, string> fields)
         {
             string graphqlendpoint = env.Host;
             if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
             graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
             string accessToken = env.AccessToken;
 
-            Console.WriteLine("Try to update security field for item " + itemId);
-
+            Console.WriteLine("Try to update some field for item " + itemId);
+            string graphQLfields = string.Empty;
+            foreach (var field in fields)
+            {
+                graphQLfields += inputFieldFormat(field.Key, field.Value);
+            }
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
             var result = await Request.CallGraphQLAsync<UpdateItemResponse>(
                 new Uri(graphqlendpoint),
@@ -30,7 +34,7 @@ namespace SitecoreCommander.Authoring
                 "\r\n itemId: \"" + itemId + "\"" +
                 "\r\n language: \"" + language + "\"" +
                 "\r\n fields: [" +
-                inputFieldFormatAllowEmpty("__Security", securityString) +
+                graphQLfields +
                 "\r\n      ]\r\n    }\r\n  ) {\r\n    item {\r\n      itemId\r\n    }\r\n  }\r\n}",
                 new
                 {

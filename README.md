@@ -68,3 +68,12 @@ Contain code for Authoring, Edge and RESTful Sitecore API.
 - 18 November Added generiek create item
 - 23 May 2025 Added AddMedia, Delete Item and Delete Subitems Except
 - 9 june 2025 Added WordPress to Sitecore Import Example
+
+### Error fixing
+
+Tip for search on authorings API you are depend on the SOLR index, especially when you are working local check on error like:
+```
+GraphQL returned errors:
+  - Solr schema is not populated for index 'sitecore_master_index'.
+
+Be sure you update is populated and fully indexed when using the search.
