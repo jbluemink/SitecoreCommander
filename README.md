@@ -57,7 +57,7 @@ Contain code for Authoring, Edge and RESTful Sitecore API.
 
 ## Autentication
  - For the Authoring API, use the Sitecore CLI to log in, enabling user-based authentication with roles and permissions. In contrast, the Automation Client is designed for automated processes, using a service account that operates without user-specific access control.
- 
+ - For the Sitecore Stream Agent API you need to use the automation client from the portal, the Sitecore CLI does not give the scope you need for this API.
 ### Recent Updates:
 - 19 July initial version with Remove Language/Version from a single item or a Tree of items
 - 9 August Added a move item methode and Move SubItems methode including an exclude option
@@ -69,6 +69,7 @@ Contain code for Authoring, Edge and RESTful Sitecore API.
 - 23 May 2025 Added AddMedia, Delete Item and Delete Subitems Except
 - 9 june 2025 Added WordPress to Sitecore Import Example
 - 11 july 2025 Added Replace Field method
+- 05 November 2025 Added Sitecore Stream Agent API example
 
 ### Error fixing
 
