@@ -6,14 +6,28 @@ using SitecoreCommander.Command;
 using SitecoreCommander.Edge;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Lib;
+using SitecoreCommander.Login;
 using SitecoreCommander.RESTful;
 using SitecoreCommander.WordPress;
 
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
-var env = Login.GetSitecoreEnvironment();
+//var env = Login.GetSitecoreEnvironment();
+
+
+//example list sites with Agent api
+var token = await SitecoreJwtClient.GetJwtAsync();
+var sites = await SitecoreCommander.Agent.ListSites.GetSites(token, CancellationToken.None);
+
+if (sites?.Sites != null)
+{
+    foreach (var site in sites.Sites)
+    {
+        Console.WriteLine($"{site.Name} ({site.TargetHostname})");
+    }
+}
 
 //Example replace field in subtree
-var result = ReplaceFieldFromSubtree.ReplaceAsync(env, "/sitecore/content", "en", "Title", "&nbsp;", " ", "Sample Item").GetAwaiter().GetResult();
+//var result = ReplaceFieldFromSubtree.ReplaceAsync(env, "/sitecore/content", "en", "Title", "&nbsp;", " ", "Sample Item").GetAwaiter().GetResult();
 
 
 //Example upload media

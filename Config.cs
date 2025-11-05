@@ -14,6 +14,9 @@ namespace SitecoreCommander
         //See /sitecore/system/Settings/Services/API Keys
         internal static string apikey = "{F2782F9C-5242-46A4-84B3-10189026BB74}";
 
+        //see https://deploy.sitecorecloud.io/credentials/environment
+        internal static string JwtClientId = "xxxxxx";
+        internal static string JwtClientSecret = "xxxxxxxxxxx_xx_xxxxx-xxxxxx";
 
         internal static string DefaultLanguage = "en";
 
