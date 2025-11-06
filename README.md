@@ -1,7 +1,7 @@
 # SitecoreCommander
 SitecoreCommander is a tool designed for managing Sitecore instances, typically utilized by developers and administrators working with the Sitecore Content Management System (CMS). It helps in performing various administrative tasks by Using the API's. See [Using the Sitecore APIs with Sitecore Commander](https://www.stockpick.nl/sitecore/using-the-sitecore-apis-with-sitecore-commander/)
 
-For Sitecore XM Cloud and Sitecore 10.3+ 
+For Sitecore IA also known as Sitecore XM Cloud and Sitecore 10.3+ 
 
 ## Overview:
 
@@ -34,7 +34,7 @@ Optimize task management, ensuring that resource-intensive operations are handle
 
 - Tools like Postman, Firecamp.dev or GraphQL Playground are excellent for making single API calls to Sitecore, useful for testing and debugging.
 SitecoreCommander is ideal for scenarios requiring multiple API calls and complex scripting, offering a more robust solution for automation.
-Contain code for Authoring, Edge and RESTful Sitecore API.
+Contain code for Sitecore Stream Agent API, Authoring, Edge and RESTful Sitecore API.
 
 ## Use Cases:
 
