@@ -7,6 +7,12 @@ For Sitecore IA also known as Sitecore XM Cloud and Sitecore 10.3+
 
 SitecoreCommander and Visual Studio, providing a powerful scripting and automation framework for managing Sitecore environments. It allows developers and administrators to execute complex scripts and manage long-running tasks efficiently within Sitecore.
 
+- Sitecore Agent API   RESTful API
+- Sitecore Authoring API   GraphQL API
+- Sitecore Edge API   GraphQL API
+- Sitecore ItemService RESTful API
+- WordPress XML
+
 ## Note:
 While SitecoreCommander offers a lot of possibilities, please be aware that this is the first version of the tool. For many functionalities, there isn't pre-existing code available, and you may need to add or customize the code yourself to meet your specific needs.
 
@@ -15,7 +21,7 @@ While SitecoreCommander offers a lot of possibilities, please be aware that this
 ### Use Visual Studio:
 
 - Utilize the full power of Visual Studio for programming in C# and executing Sitecore tasks.
-Benefit from Visual Studio’s advanced debugging features to troubleshoot and refine scripts.
+Benefit from Visual Studio’s AI Copilot Chat,advanced debugging features to troubleshoot and refine scripts.
 Complex Script Management:
 
 - Handle more intricate scripts that require extensive logic or need to run over extended periods.
@@ -70,6 +76,7 @@ Contain code for Sitecore Stream Agent API, Authoring, Edge and RESTful Sitecore
 - 9 june 2025 Added WordPress to Sitecore Import Example
 - 11 july 2025 Added Replace Field method
 - 05 November 2025 Added Sitecore Stream Agent API example
+- 23 November 2025 Added more Sitecore Agent API examples
 
 ### Error fixing
 

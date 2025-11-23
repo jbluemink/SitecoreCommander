@@ -24,6 +24,30 @@ if (sites?.Sites != null)
     {
         Console.WriteLine($"{site.Name} ({site.TargetHostname})");
     }
+    var firstSite = sites.Sites[0];
+
+    var pagesResponse = await SitecoreCommander.Agent.ListSitListPagesOfASitees.GetPages(token, CancellationToken.None, firstSite.Name, "en");
+    if (pagesResponse != null )
+    {
+        var pagesToShow = pagesResponse.Count > 10
+            ? pagesResponse.Take(10)
+            : pagesResponse;
+
+        foreach (var page in pagesToShow)
+        {
+            Console.WriteLine($" - {page.Id} ({page.Path})");
+            var pageDetails = await SitecoreCommander.Agent.RetrieveThePageDetails.GetItemById(token, CancellationToken.None, page.Id);
+            if (pageDetails?.Fields != null)
+            {
+                Console.WriteLine("number of fields: "+ pageDetails.Fields.Count);
+            }
+            else
+            {
+                Console.WriteLine("Page details or fields are null.");
+            }
+        }
+        Console.WriteLine($"the total number of pages is {pagesResponse.Count}  for site {firstSite.Name}");
+    }
 }
 
 //Example replace field in subtree

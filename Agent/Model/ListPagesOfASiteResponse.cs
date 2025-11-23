@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SitecoreCommander.Agent.Model
+{
+    public class ListPagesOfASiteResponse : List<ListPagesItem>
+    {
+    }
+
+    public class ListPagesItem
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Path { get; set; } = string.Empty;
+    }
+}
