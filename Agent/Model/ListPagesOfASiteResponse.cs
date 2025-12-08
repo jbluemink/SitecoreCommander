@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace SitecoreCommander.Agent.Model
 {
-    public class ListPagesOfASiteResponse : List<ListPagesItem>
+    internal class ListPagesOfASiteResponse : BaseAgentResponse
     {
+        public List<ListPagesItem> Items { get; set; } = new();
     }
 
     public class ListPagesItem

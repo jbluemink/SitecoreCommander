@@ -1,6 +1,6 @@
 ﻿namespace SitecoreCommander.Agent.Model
 {
-    public class SiteListResponse
+    internal class SiteListResponse : BaseAgentResponse
     {
         public List<SiteInfo> Sites { get; set; } = new();
     }

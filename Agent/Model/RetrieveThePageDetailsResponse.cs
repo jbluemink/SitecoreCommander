@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SitecoreCommander.Agent.Model
 {
-    internal class RetrieveThePageDetailsResponse
+    internal class RetrieveThePageDetailsResponse : BaseAgentResponse
     {
         public string ItemId { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

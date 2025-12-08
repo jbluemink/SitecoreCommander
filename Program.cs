@@ -1,21 +1,30 @@
 ﻿using RaiXpToCloudMigrator.XmCloud;
 using SitecoreCommander;
+using SitecoreCommander.Agent;
 using SitecoreCommander.Authoring;
 using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Command;
+using SitecoreCommander.ContentManagement;
 using SitecoreCommander.Edge;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Lib;
 using SitecoreCommander.Login;
 using SitecoreCommander.RESTful;
+using SitecoreCommander.Utils;
 using SitecoreCommander.WordPress;
 
 Console.WriteLine("Hello, World!,  Adjust the Program.cs to do you task");
+SimpleLogger.InitializeLogFile();
+
+await SimpleLogger.Log("Starting application process.");
 //var env = Login.GetSitecoreEnvironment();
 
 
 //example list sites with Agent api
 var token = await SitecoreJwtClient.GetJwtAsync();
+
+
+//example list sites with Agent api
 var sites = await SitecoreCommander.Agent.ListSites.GetSites(token, CancellationToken.None);
 
 if (sites?.Sites != null)
@@ -27,11 +36,11 @@ if (sites?.Sites != null)
     var firstSite = sites.Sites[0];
 
     var pagesResponse = await SitecoreCommander.Agent.ListSitListPagesOfASitees.GetPages(token, CancellationToken.None, firstSite.Name, "en");
-    if (pagesResponse != null )
+    if (pagesResponse != null && pagesResponse.Items != null)
     {
-        var pagesToShow = pagesResponse.Count > 10
-            ? pagesResponse.Take(10)
-            : pagesResponse;
+        var pagesToShow = pagesResponse.Items.Count > 10
+            ? pagesResponse.Items.Take(10)
+            : pagesResponse.Items;
 
         foreach (var page in pagesToShow)
         {
@@ -46,9 +55,16 @@ if (sites?.Sites != null)
                 Console.WriteLine("Page details or fields are null.");
             }
         }
-        Console.WriteLine($"the total number of pages is {pagesResponse.Count}  for site {firstSite.Name}");
+        Console.WriteLine($"the total number of pages is {pagesResponse.Items.Count}  for site {firstSite.Name}");
     }
 }
+
+
+//Example content management API 2.0 calls
+//var users = await SitecoreCommander.ContentManagement.RetrieveListOfUsers.GetUsers(token);
+//var branches = await SitecoreCommander.ContentManagement.RetrieveAllBranches.GetBranches(token);
+//var acctest = await SitecoreCommander.ContentManagement.RetrieveContentItem.GetItemById(token, "test");
+
 
 //Example replace field in subtree
 //var result = ReplaceFieldFromSubtree.ReplaceAsync(env, "/sitecore/content", "en", "Title", "&nbsp;", " ", "Sample Item").GetAwaiter().GetResult();

@@ -30,7 +30,13 @@ namespace SitecoreCommander.Agent
                 PropertyNameCaseInsensitive = true
             };
 
-             return JsonSerializer.Deserialize<ListPagesOfASiteResponse>(json, options);
+            List<ListPagesItem>? items = JsonSerializer.Deserialize<List<ListPagesItem>>(json, options) ?? new List<ListPagesItem>();
+            var responseValue = new ListPagesOfASiteResponse
+            {
+                Items = items,
+                __jobid = jobid
+            };
+            return responseValue;
         }
     }
 }

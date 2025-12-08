@@ -29,8 +29,9 @@ namespace SitecoreCommander.Agent
             {
                 PropertyNameCaseInsensitive = true
             };
-
-            return JsonSerializer.Deserialize<RetrieveThePageDetailsResponse>(json, options);
+            var responseValue = JsonSerializer.Deserialize<RetrieveThePageDetailsResponse>(json, options);
+            responseValue!.__jobid = jobid;
+            return responseValue;
         }
     }
 }
