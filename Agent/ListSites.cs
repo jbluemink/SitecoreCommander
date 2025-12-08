@@ -1,6 +1,7 @@
 ﻿using SitecoreCommander.Agent.Model;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Login;
+using SitecoreCommander.Utils;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -14,9 +15,11 @@ namespace SitecoreCommander.Agent
             string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/sites";
 
             Console.WriteLine("Agent API Searching for Sites  scope: " + token.scope);
+            string jobid = $"commander-job-{await SequenceGenerator.NextValue()}-sites-{Guid.NewGuid():N}";
+            await SimpleLogger.Log("jobid: " + jobid);
 
             using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("x-sc-job-id", "commander-job-sites" + RandomNumberGenerator.GetInt32(0, int.MaxValue));
+            client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
 
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);

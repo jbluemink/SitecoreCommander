@@ -21,7 +21,8 @@ namespace SitecoreCommander.Login
         public static async Task<JwtTokenResponse?> GetJwtAsync(
             string clientId,
             string clientSecret,
-            string audience = "https://api.sitecorecloud.io")
+            string audience = "https://api.sitecorecloud.io",
+            string authority = "https://auth.sitecorecloud.io/oauth/token")
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.sitecorecloud.io/oauth/token")
             {
@@ -30,7 +31,8 @@ namespace SitecoreCommander.Login
                 new KeyValuePair<string, string>("client_id", clientId),
                 new KeyValuePair<string, string>("client_secret", clientSecret),
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("audience", audience)
+                new KeyValuePair<string, string>("audience", audience),
+                new KeyValuePair<string, string>("authority", audience)
             })
             };
 

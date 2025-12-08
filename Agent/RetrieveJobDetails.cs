@@ -8,18 +8,15 @@ using System.Text.Json;
 
 namespace SitecoreCommander.Agent
 {
-    internal class RetrieveThePageDetails
+    internal class RetrieveJobDetails
     {
-        internal static async Task<RetrieveThePageDetailsResponse?> GetItemById(JwtTokenResponse token, CancellationToken cancellationToken, string pageId)
+        internal static async Task<RetrieveJobDetailsRespons?> GetJob(JwtTokenResponse token, CancellationToken cancellationToken, string jobId)
         {
-            string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/content/" + pageId;
+            string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/jobs/" + jobId;
 
-            Console.WriteLine("Agent API Get page details: " + pageId);
-            string jobid = $"commander-job-{await SequenceGenerator.NextValue()}-retrievepage-{Guid.NewGuid():N}";
-            await SimpleLogger.Log("jobid: " + jobid);
+            Console.WriteLine("Agent API Searching for job: " + jobId);
 
             using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
 
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);
@@ -30,7 +27,7 @@ namespace SitecoreCommander.Agent
                 PropertyNameCaseInsensitive = true
             };
 
-            return JsonSerializer.Deserialize<RetrieveThePageDetailsResponse>(json, options);
+            return JsonSerializer.Deserialize<RetrieveJobDetailsRespons>(json, options);
         }
     }
 }
