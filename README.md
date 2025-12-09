@@ -77,6 +77,7 @@ Contain code for Sitecore Stream Agent API, Authoring, Edge and RESTful Sitecore
 - 11 july 2025 Added Replace Field method
 - 05 November 2025 Added Sitecore Stream Agent API example
 - 23 November 2025 Added more Sitecore Agent API examples
+- 9 December 2025 Added jobid methodes for Agent API
 
 ### Error fixing
 
