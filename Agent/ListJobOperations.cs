@@ -20,6 +20,14 @@ namespace SitecoreCommander.Agent
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
 
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);
+            
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // 404:, return null
+                Console.WriteLine("JobId:" + jobId + " not found");
+                return null;
+            }
+
             string json = await response.Content.ReadAsStringAsync(cancellationToken);
 
             var options = new JsonSerializerOptions

@@ -1,34 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
 namespace SitecoreCommander.Agent.Model
 {
     internal class ListJobOperationsResponse : BaseAgentResponse
     {
-        public string id { get; set; } = string.Empty;
-        public string type { get; set; } = string.Empty;
-        public string tenantId { get; set; } = string.Empty;
-        public string jobId { get; set; } = string.Empty;
-        public int sequenceNumber { get; set; } = 0;
-        public string timestamp { get; set; } = string.Empty;
-        public string operation { get; set; } = string.Empty;
-        public string effectType { get; set; } = string.Empty;
-        public ItemInfo? item { get; set; }
-        public string status { get; set; } = string.Empty;
-        public string? revert { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = string.Empty;
+
+        [JsonPropertyName("tenantId")]
+        public string TenantId { get; set; } = string.Empty;
+
+        [JsonPropertyName("jobId")]
+        public string JobId { get; set; } = string.Empty;
+
+        [JsonPropertyName("sequenceNumber")]
+        public int SequenceNumber { get; set; } = 0;
+
+        [JsonPropertyName("timestamp")]
+        public string Timestamp { get; set; } = string.Empty;
+
+        [JsonPropertyName("operation")]
+        public string Operation { get; set; } = string.Empty;
+
+        [JsonPropertyName("effectType")]
+        public string EffectType { get; set; } = string.Empty;
+
+        [JsonPropertyName("item")]
+        public ItemInfo? Item { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty;
+
+        [JsonPropertyName("revert")]
+        public RevertInfo? Revert { get; set; }
     }
 
     internal class ItemInfo
     {
-        public string id { get; set; } = string.Empty;
-        public VersionInfo? version { get; set; }
-        public string language { get; set; } = string.Empty;
-        public string? archiveId { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("version")]
+        public VersionInfo? Version { get; set; }
+
+        [JsonPropertyName("language")]
+        public string Language { get; set; } = string.Empty;
+
+        [JsonPropertyName("archiveId")]
+        public string? ArchiveId { get; set; }
     }
 
     internal class VersionInfo
     {
-        public string? before { get; set; }
-        public string? after { get; set; }
+        [JsonPropertyName("before")]
+        public string? Before { get; set; }
+
+        [JsonPropertyName("after")]
+        public string? After { get; set; }
     }
 }

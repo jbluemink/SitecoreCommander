@@ -23,6 +23,11 @@ await SimpleLogger.Log("Starting application process.");
 //example list sites with Agent api
 var token = await SitecoreJwtClient.GetJwtAsync();
 
+//example work with jobs
+var result1 = await RetrieveJobDetails.GetJob(token, CancellationToken.None, "commander-job-0-updateitem-1b3b9966fc324d71a7a701052bf4dc7f");
+var result2 = await ListJobOperations.GetJob(token, CancellationToken.None, "commander-job-0-updateitem-1b3b9966fc324d71a7a701052bf4dc7f");
+
+var revvv = await RevertJob.Revert(token, CancellationToken.None, "commander-job-0-updateitem-1b3b9966fc324d71a7a701052bf4dc7f");
 
 //example list sites with Agent api
 var sites = await SitecoreCommander.Agent.ListSites.GetSites(token, CancellationToken.None);
