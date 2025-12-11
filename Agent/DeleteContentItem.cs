@@ -11,44 +11,44 @@ using System.Text.Json;
 
 namespace SitecoreCommander.Agent
 {
-    internal class UpdateContentItem
+    internal class DeleteContentItem
     {
-        internal static async Task<UpdateContentItemResponse?> UpdateItemById(JwtTokenResponse token, CancellationToken cancellationToken, string itemId, Dictionary<string, string> fields, string language, Boolean createNewVersion, string siteName, string? jobid)
+        internal static async Task<DeleteContentItemResponse?> DeleteItemById(JwtTokenResponse token, CancellationToken cancellationToken, string itemId,  string? language, string? jobid)
         {
             string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/content/" + itemId;
-
-            Console.WriteLine("Agent API update item: " + itemId);
+            if (language != null && !string.IsNullOrWhiteSpace(language))
+            {
+                agentApiEndpoint += "?language=" + language;
+            }
+            Console.WriteLine("Agent API delete item: " + itemId);
             using HttpClient client = new();
             if (jobid != null && !string.IsNullOrWhiteSpace(jobid))
             {
-                await SimpleLogger.Log("jobid: " + jobid + " update item:"+ itemId);
+                await SimpleLogger.Log("jobid: " + jobid + " delete item:"+ itemId);
                 client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
             }
 
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
 
-            string jsonBody = JsonSerializer.Serialize(new
-            {
-                fields,
-                language,
-                siteName,
-                createNewVersion
-            });
-            using StringContent postData = new(jsonBody, Encoding.UTF8, "application/json");
-            using HttpResponseMessage request = await client.PutAsync(agentApiEndpoint, postData);
+            using HttpResponseMessage request = await client.DeleteAsync(agentApiEndpoint);
             string json = await request.Content.ReadAsStringAsync();
 
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var responseValue = JsonSerializer.Deserialize<UpdateContentItemResponse>(json, options);
-            responseValue!.__jobid = jobid;
+            var responseValue = JsonSerializer.Deserialize<DeleteContentItemResponse>(json, options);
+            if (responseValue == null)
+            {
+                return null;
+            }
+
+            responseValue.__jobid = jobid;
 
             if (request.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 // 404:, return null
-                Console.WriteLine("update failed:" + responseValue.Detail);
+                Console.WriteLine("update faild:" + responseValue.Detail);
                 return null;
             }
 

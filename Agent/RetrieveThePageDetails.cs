@@ -10,16 +10,18 @@ namespace SitecoreCommander.Agent
 {
     internal class RetrieveThePageDetails
     {
-        internal static async Task<RetrieveThePageDetailsResponse?> GetItemById(JwtTokenResponse token, CancellationToken cancellationToken, string pageId)
+        internal static async Task<RetrieveThePageDetailsResponse?> GetItemById(JwtTokenResponse token, CancellationToken cancellationToken, string pageId, string? jobid = null)
         {
             string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/content/" + pageId;
 
             Console.WriteLine("Agent API Get page details: " + pageId);
-            string jobid = $"commander-job-{await SequenceGenerator.NextValue()}-retrievepage-{Guid.NewGuid():N}";
-            await SimpleLogger.Log("jobid: " + jobid);
 
             using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
+            if (jobid != null && !string.IsNullOrWhiteSpace(jobid))
+            {
+                await SimpleLogger.Log("jobid: " + jobid + " RetrieveThePageDetails");
+                client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
+            }
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
 
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);

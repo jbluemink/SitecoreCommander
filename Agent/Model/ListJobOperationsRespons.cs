@@ -2,7 +2,7 @@
 
 namespace SitecoreCommander.Agent.Model
 {
-    internal class ListJobOperationsResponse : BaseAgentResponse
+    internal class ListJobOperationsResponse
     {
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;

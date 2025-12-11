@@ -10,16 +10,18 @@ namespace SitecoreCommander.Agent
 {
     internal class ListSitListPagesOfASitees
     {
-        internal static async Task<ListPagesOfASiteResponse?> GetPages(JwtTokenResponse token, CancellationToken cancellationToken, string siteName, string language)
+        internal static async Task<ListPagesOfASiteResponse?> GetPages(JwtTokenResponse token, CancellationToken cancellationToken, string siteName, string language, string? jobid = null)
         {
             string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/sites/"+siteName+"/pages?language="+language;
 
             Console.WriteLine("Agent API Searching for Pages sitename: " + siteName);
-            string jobid = $"commander-job-{await SequenceGenerator.NextValue()}-listpages-{Guid.NewGuid():N}";
-            await SimpleLogger.Log("jobid: " + jobid);
 
             using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
+            if (jobid != null && !string.IsNullOrWhiteSpace(jobid))
+            {
+                await SimpleLogger.Log("jobid: " + jobid + " listpages");
+                client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
+            }
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
 
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);

@@ -24,13 +24,14 @@ await SimpleLogger.Log("Starting application process.");
 var token = await SitecoreJwtClient.GetJwtAsync();
 
 //example work with jobs
-var result1 = await RetrieveJobDetails.GetJob(token, CancellationToken.None, "commander-job-0-updateitem-1b3b9966fc324d71a7a701052bf4dc7f");
-var result2 = await ListJobOperations.GetJob(token, CancellationToken.None, "commander-job-0-updateitem-1b3b9966fc324d71a7a701052bf4dc7f");
+var result1 = await RetrieveJobDetails.GetJob(token, CancellationToken.None, "commander-job-xxx-updateitem-jbltest");
+var result2 = await ListJobOperations.GetJob(token, CancellationToken.None, "commander-job-xxx-updateitem-jbltest");
 
-var revvv = await RevertJob.Revert(token, CancellationToken.None, "commander-job-0-updateitem-1b3b9966fc324d71a7a701052bf4dc7f");
+var jobid = await CreateJobId.GenerateAsync();
+
 
 //example list sites with Agent api
-var sites = await SitecoreCommander.Agent.ListSites.GetSites(token, CancellationToken.None);
+var sites = await SitecoreCommander.Agent.ListSites.GetSites(token, CancellationToken.None,"");
 
 if (sites?.Sites != null)
 {
@@ -40,7 +41,7 @@ if (sites?.Sites != null)
     }
     var firstSite = sites.Sites[0];
 
-    var pagesResponse = await SitecoreCommander.Agent.ListSitListPagesOfASitees.GetPages(token, CancellationToken.None, firstSite.Name, "en");
+    var pagesResponse = await SitecoreCommander.Agent.ListSitListPagesOfASitees.GetPages(token, CancellationToken.None, firstSite.Name, "en","");
     if (pagesResponse != null && pagesResponse.Items != null)
     {
         var pagesToShow = pagesResponse.Items.Count > 10

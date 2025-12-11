@@ -10,7 +10,7 @@ namespace SitecoreCommander.Agent
 {
     internal class RevertJob
     {
-        internal static async Task<RevertJobRespons> Revert(JwtTokenResponse token, CancellationToken cancellationToken, string jobId)
+        internal static async Task<RevertJobRespons?> Revert(JwtTokenResponse token, CancellationToken cancellationToken, string jobId)
         {
             Console.WriteLine("Agent API try to revert job: " + jobId);
             string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/jobs/" + jobId + "/revert";

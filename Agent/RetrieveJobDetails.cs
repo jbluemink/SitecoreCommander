@@ -22,6 +22,13 @@ namespace SitecoreCommander.Agent
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);
             string json = await response.Content.ReadAsStringAsync(cancellationToken);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // 404:, return null
+                Console.WriteLine("JobId:" + jobId + " not found");
+                return null;
+            }
+
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true

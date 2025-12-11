@@ -17,5 +17,11 @@ namespace SitecoreCommander.Agent.Model
 
         [JsonPropertyName("updatedFields")]
         public Dictionary<string, string> UpdatedFields { get; set; } = new();
+
+        //error response
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = string.Empty;
+        [JsonPropertyName("detail")]
+        public string Detail { get; set; } = string.Empty;
     }
 }
