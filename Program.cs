@@ -24,10 +24,13 @@ await SimpleLogger.Log("Starting application process.");
 var token = await SitecoreJwtClient.GetJwtAsync();
 
 //example work with jobs
-var result1 = await RetrieveJobDetails.GetJob(token, CancellationToken.None, "commander-job-xxx-updateitem-jbltest");
-var result2 = await ListJobOperations.GetJob(token, CancellationToken.None, "commander-job-xxx-updateitem-jbltest");
+var jobresult = await RetrieveJobDetails.GetJob(token, CancellationToken.None, "commander-job-System.Threading.Tasks.Task`1[System.Int32]-bbb34a9f76bb493294e63d47077e63c3");
+var jobresultlist = await ListJobOperations.GetJob(token, CancellationToken.None, "commander-job-0-5cb4fd33195b47be908b9fad578efa33");
+var revert1 = await RevertJob.Revert(token, CancellationToken.None, "commander-job-0-d2ffde4657b2434ab545e8da0a24a4fc");
+//Console.WriteLine("Revert job result: " + revert1?.Status);
 
 var jobid = await CreateJobId.GenerateAsync();
+//var delresult = await DeleteContentItem.DeleteItemById(token, CancellationToken.None, "{A51F63EB-809E-49D9-988B-921094FF2332}", "en", jobid);
 
 
 //example list sites with Agent api
@@ -48,7 +51,7 @@ if (sites?.Sites != null)
             ? pagesResponse.Items.Take(10)
             : pagesResponse.Items;
 
-        foreach (var page in pagesToShow)
+        foreach (var page in pagesToShow) 
         {
             Console.WriteLine($" - {page.Id} ({page.Path})");
             var pageDetails = await SitecoreCommander.Agent.RetrieveThePageDetails.GetItemById(token, CancellationToken.None, page.Id);
@@ -60,7 +63,11 @@ if (sites?.Sites != null)
             {
                 Console.WriteLine("Page details or fields are null.");
             }
-        }
+            /*var upd1 = await UpdateContentItem.UpdateItemById(token, CancellationToken.None, page.Id, new Dictionary<string, string>
+            {
+                { "__Version Name", "Updated from SitecoreCommander Agent API" },
+            }, "en", true, "", jobid);*/
+                    }
         Console.WriteLine($"the total number of pages is {pagesResponse.Items.Count}  for site {firstSite.Name}");
     }
 }

@@ -21,6 +21,12 @@ namespace SitecoreCommander.Agent
             using HttpResponseMessage request = await client.PostAsync(agentApiEndpoint, null, cancellationToken);
             string json = await request.Content.ReadAsStringAsync();
 
+            if (!request.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Agent API revert job: " + request.StatusCode);
+                Console.WriteLine("Response: " + json);
+                return null;
+            }
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true

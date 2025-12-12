@@ -13,16 +13,32 @@ namespace SitecoreCommander.Agent
 {
     internal class UpdateContentItem
     {
-        internal static async Task<UpdateContentItemResponse?> UpdateItemById(JwtTokenResponse token, CancellationToken cancellationToken, string itemId, Dictionary<string, string> fields, string language, Boolean createNewVersion, string siteName, string? jobid)
+        internal static async Task<UpdateContentItemResponse?> UpdateItemById(JwtTokenResponse token, CancellationToken cancellationToken, string itemId, Dictionary<string, string> fields, string language, Boolean createNewVersion, string siteName, string? jobid, string? versionName = "SitecoreCommander Agent Api")
         {
             string agentApiEndpoint = "https://edge-platform.sitecorecloud.io/stream/ai-agent-api/api/v1/content/" + itemId;
 
             Console.WriteLine("Agent API update item: " + itemId);
+            if (fields == null || fields.Count == 0)
+            {
+                Console.WriteLine("No fields to update.");
+                return null;
+            }
             using HttpClient client = new();
             if (jobid != null && !string.IsNullOrWhiteSpace(jobid))
             {
                 await SimpleLogger.Log("jobid: " + jobid + " update item:"+ itemId);
                 client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
+            }
+            if (versionName != null && !string.IsNullOrWhiteSpace(versionName))
+            {
+                if (fields.ContainsKey("__Version Name"))
+                {
+                    fields["__Version Name"] = versionName;
+                }
+                else
+                {
+                    fields.Add("__Version Name", versionName);
+                }
             }
 
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
