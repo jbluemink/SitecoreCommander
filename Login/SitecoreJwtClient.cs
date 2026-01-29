@@ -32,7 +32,7 @@ namespace SitecoreCommander.Login
                 new KeyValuePair<string, string>("client_secret", clientSecret),
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
                 new KeyValuePair<string, string>("audience", audience),
-                new KeyValuePair<string, string>("authority", audience)
+                new KeyValuePair<string, string>("authority", authority)
             })
             };
 
