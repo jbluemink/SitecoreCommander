@@ -78,6 +78,7 @@ Contain code for Sitecore Stream Agent API, Authoring, Edge and RESTful Sitecore
 - 05 November 2025 Added Sitecore Stream Agent API example
 - 23 November 2025 Added more Sitecore Agent API examples
 - 9 December 2025 Added jobid methodes for Agent API
+- 29 January 2026 Added JwtHelper and Publish Methode for Authoring API
 
 ### Error fixing
 
