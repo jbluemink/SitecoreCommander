@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class MoveItem
+    public class MoveItem
     {
-        public Response moveItem { get; set; }
+        public Response moveItem { get; set; } = null!;
     }
 }

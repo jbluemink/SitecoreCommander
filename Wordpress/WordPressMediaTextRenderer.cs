@@ -54,8 +54,8 @@ public class WordPressMediaTextRenderer
         if (imgNode == null)
             return string.Empty;
 
-        var src = imgNode.GetAttributeValue("src", null);
-        var alt = imgNode.GetAttributeValue("alt", null);
+        var src = imgNode.GetAttributeValue("src", string.Empty);
+        var alt = imgNode.GetAttributeValue("alt", string.Empty);
         var classAttr = imgNode.GetAttributeValue("class", "");
         int? mediaId = null;
 
@@ -117,7 +117,7 @@ public class WordPressMediaTextRenderer
                         break;
 
                     case "a":
-                        var href = childNode.GetAttributeValue("href", null);
+                        var href = childNode.GetAttributeValue("href", string.Empty);
                         var linkText = childNode.InnerText.Trim();
                         if (!string.IsNullOrEmpty(href))
                         {

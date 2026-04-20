@@ -1,11 +1,11 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class Uploaded
+    public class Uploaded
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string ItemPath { get; set; }
-        public string Message { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string ItemPath { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
 
         public string ItemIdEnclosedInBraces
         {

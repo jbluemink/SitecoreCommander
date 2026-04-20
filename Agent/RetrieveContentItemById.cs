@@ -1,9 +1,6 @@
-﻿using SitecoreCommander.Agent.Model;
-using SitecoreCommander.Edge.Model;
+using SitecoreCommander.Agent.Model;
 using SitecoreCommander.Login;
 using SitecoreCommander.Utils;
-using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace SitecoreCommander.Agent
@@ -22,7 +19,7 @@ namespace SitecoreCommander.Agent
             using HttpClient client = new();
             if (jobid != null && !string.IsNullOrWhiteSpace(jobid))
             {
-                await SimpleLogger.Log("jobid: " + jobid + " RetrieveThePageDetails");
+                await SimpleLogger.LogAsync("jobid: " + jobid + " RetrieveThePageDetails");
                 client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
             }
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
@@ -35,7 +32,12 @@ namespace SitecoreCommander.Agent
                 PropertyNameCaseInsensitive = true
             };
             var responseValue = JsonSerializer.Deserialize<RetrieveThePageDetailsResponse>(json, options);
-            responseValue!.__jobid = jobid;
+            if (responseValue == null)
+            {
+                return null;
+            }
+
+            responseValue.__jobid = jobid ?? string.Empty;
             return responseValue;
         }
     }

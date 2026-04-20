@@ -1,8 +1,8 @@
-﻿
+
 namespace SitecoreCommander.Edge.Model
 {
     internal class ResultGet
     {
-        public ResultGetItem item { get; set; }
+        public ResultGetItem item { get; set; } = null!;
     }
 }

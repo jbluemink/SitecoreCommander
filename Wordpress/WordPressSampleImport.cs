@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using RaiXpToCloudMigrator.XmCloud;
 using SitecoreCommander.Authoring;
 using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Edge.Model;
@@ -134,8 +133,7 @@ namespace SitecoreCommander.WordPress
             doc.LoadHtml(innerHtml);
 
             // Select all columns
-            var columnNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' wp-block-column ')]")
-                  ?? new HtmlNodeCollection(null);
+            var columnNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' wp-block-column ')]");
 
             if (columnNodes != null)
             {
@@ -373,6 +371,10 @@ namespace SitecoreCommander.WordPress
                         }
                         var createdTagFolder = CreateFolderItem.CreateMap(env, CancellationToken.None, domain, tagFolderTemplateID, tagMainFolderId, language, [])
                                                                .GetAwaiter().GetResult();
+                        if (createdTagFolder == null)
+                        {
+                            throw new Exception($"Tag folder {tagFolder}/{domain} could not be created");
+                        }
                         tagItemFolderId = createdTagFolder.itemIdEnclosedInBraces;
                     } else {
                         tagItemFolderId = tagItemFolder.itemIdEnclosedInBraces;
@@ -380,7 +382,7 @@ namespace SitecoreCommander.WordPress
                     sitecoretagfolders.Add(tagFolder + "/" + domain, tagItemFolderId);
                 }
 
-                var createdTag = new Created();
+                Created? createdTag;
                 if (tagFolder.Contains("/Lists"))
                 {
                     var fieldNameValues = new Dictionary<string, string>
@@ -394,6 +396,10 @@ namespace SitecoreCommander.WordPress
                 {
                     createdTag = CreateTagItem.CreateTag(env, CancellationToken.None, tag, tagItemFolderId, language)
                                               .GetAwaiter().GetResult();
+                }
+                if (createdTag == null)
+                {
+                    throw new Exception($"Tag item {domain}/{tag} could not be created");
                 }
                 sitecoretagids.Add(domain + "/" + tag, createdTag.itemIdEnclosedInBraces);
                 return createdTag.itemIdEnclosedInBraces;
@@ -450,6 +456,10 @@ namespace SitecoreCommander.WordPress
             try
             {
                 var upload = AddMedia.Create(env, CancellationToken.None, mediapath, language, wpmedia.Title.Replace("\\", ""), wpmedia.Url).GetAwaiter().GetResult();
+                if (upload == null)
+                {
+                    return null;
+                }
                 sitecoremediapathid.Add(mediapath.TrimEnd('/'), upload.ItemIdEnclosedInBraces);
                 return upload.ItemIdEnclosedInBraces;
             }
@@ -609,6 +619,11 @@ namespace SitecoreCommander.WordPress
         private bool CreateLocalDataSources(EnvironmentConfiguration env, List<WordPressBlock> blocks, string ItemGuid, string language, string mediaFolderPath, string name)
         {
             var datafolder = CreateFolderItem.CreateHiddenDataFolder(env, CancellationToken.None, "Data", ItemGuid, language).GetAwaiter().GetResult();
+            if (datafolder == null)
+            {
+                Console.WriteLine("Data folder could not be created; local datasources are skipped.");
+                return false;
+            }
             int count = 1;
 
             foreach (var block in blocks)
@@ -719,10 +734,10 @@ namespace SitecoreCommander.WordPress
                             { "Link",firstbuttonlink }
                         };
 
-                        var updatedCTA = AddItem.Create(env, CancellationToken.None, "CTA" + count, Templates.CTAComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesCTA);
+                        var updatedCTA = AddItem.Create(env, CancellationToken.None, "CTA" + count, Templates.CTAComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesCTA).GetAwaiter().GetResult();
                         if (updatedCTA != null)
                         {
-                            Console.WriteLine($"Created CTA data source: {updatedCTA.Result.itemIdEnclosedInBraces}");
+                            Console.WriteLine($"Created CTA data source: {updatedCTA.itemIdEnclosedInBraces}");
                         }
 
                         if (buttonNodes != null && buttonNodes.Count > 0)
@@ -739,10 +754,10 @@ namespace SitecoreCommander.WordPress
                                     { "Link", "<link text=\""+buttonText+"\" linktype=\"external\" url=\""+buttonLink+"\" anchor=\"\" target=\"\" />" }
                                 };
 
-                                var updatedButton = AddItem.Create(env, CancellationToken.None, "CTAButton" + count + "-" + i, Templates.CTAButtonComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesButton);
+                                var updatedButton = AddItem.Create(env, CancellationToken.None, "CTAButton" + count + "-" + i, Templates.CTAButtonComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesButton).GetAwaiter().GetResult();
                                 if (updatedButton != null)
                                 {
-                                    Console.WriteLine($"Created CTA Button data source: {updatedButton.Result.itemIdEnclosedInBraces}");
+                                    Console.WriteLine($"Created CTA Button data source: {updatedButton.itemIdEnclosedInBraces}");
                                 }
                             }
                         }
@@ -789,10 +804,10 @@ namespace SitecoreCommander.WordPress
                                     { "ImageCaption", alt }
                                 };
 
-                                var updatedImage = AddItem.Create(env, CancellationToken.None, "Image" + count, Templates.ImageComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesImage);
+                                var updatedImage = AddItem.Create(env, CancellationToken.None, "Image" + count, Templates.ImageComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesImage).GetAwaiter().GetResult();
                                 if (updatedImage != null)
                                 {
-                                    Console.WriteLine($"Created image data source: {updatedImage.Result.itemIdEnclosedInBraces}");
+                                    Console.WriteLine($"Created image data source: {updatedImage.itemIdEnclosedInBraces}");
                                 }
                             }
                             else
@@ -816,6 +831,11 @@ namespace SitecoreCommander.WordPress
                             { "Title", "" },
                         };
                         var galleryupdated = AddItem.Create(env, CancellationToken.None, "Gallery" + count, Templates.GalleryComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldgallery).GetAwaiter().GetResult();
+                        if (galleryupdated == null)
+                        {
+                            Console.WriteLine("Gallery datasource could not be created.");
+                            break;
+                        }
                         var imagecount = 0;
                         foreach(var image  in gallery.Images)
                         {
@@ -826,7 +846,7 @@ namespace SitecoreCommander.WordPress
                                 var fieldNameValuesImage = new Dictionary<string, string>
                                 {
                                     { "Image", "<image mediaid=\"" + mediaId + "\" />" },
-                                    { "ImageCaption", image.Alt },
+                                    { "ImageCaption", image.Alt ?? string.Empty },
                                 };
                                 var updated4 = AddItem.Create(env, CancellationToken.None, "Image" + imagecount, Templates.ImageComponentTemplateGuid, galleryupdated.itemIdEnclosedInBraces, language, fieldNameValuesImage);
                             }
@@ -868,7 +888,7 @@ namespace SitecoreCommander.WordPress
                             var fieldNameValuesYoutube = new Dictionary<string, string>
                             {
                                 { "BaseUrl", "https://www.youtube.com/embed/" },
-                                { "VideoId", youtubeid   },
+                                { "VideoId", youtubeid ?? string.Empty   },
                             };
                             var updatedyoutube = AddItem.Create(env, CancellationToken.None, "YouTube" + count, Templates.YouTubeComponentTemplateGuid, datafolder.itemIdEnclosedInBraces, language, fieldNameValuesYoutube);
                         }
@@ -973,7 +993,7 @@ namespace SitecoreCommander.WordPress
                 } else
                 {
                     var thumbnailImg = mediaPosts.FirstOrDefault(x => x.Id == post.MediaThumbnailId);
-                    var thubnaimImgSitecoreId = GetOrCreateMedia(thumbnailImg, "Banners", "", mediaFolderPath, language, env);
+                    var thubnaimImgSitecoreId = thumbnailImg != null ? GetOrCreateMedia(thumbnailImg, "Banners", "", mediaFolderPath, language, env) : null;
                     string tags = string.Empty;
                     var tagList = new List<string?>();
                     var tagListProject_maincategories = new List<string?>();
@@ -1027,11 +1047,13 @@ namespace SitecoreCommander.WordPress
                         }
                     }
 
-                    var yoastTitel = ReplaceSeoPlaceholders(post.YoastTitle, post.Title, "Company name", "");
-                    var description = ReplaceSeoPlaceholders(post.YoastMetaDescription, yoastTitel, "Company name", "");
+                    var yoastTitel = ReplaceSeoPlaceholders(post.YoastTitle ?? string.Empty, post.Title, "Company name", "");
+                    var description = ReplaceSeoPlaceholders(post.YoastMetaDescription ?? string.Empty, yoastTitel, "Company name", "");
                     
-                    var pagetype = "{04EA598F-13D9-450A-8F3B-25D0A8711484}";
                     var templateid = defaulttemplateid;
+#pragma warning disable CS0219
+                    var pagetype = "{04EA598F-13D9-450A-8F3B-25D0A8711484}";
+#pragma warning restore CS0219
                     if (post.PostType == "post")
                     {
                         //news page
@@ -1080,7 +1102,7 @@ namespace SitecoreCommander.WordPress
                         //{ "PageType", pagetype },
                         //{ "OpenGraphImageUrl","<image mediaid=\""+thubnaimImgSitecoreId+ "\" />"  },
                         { "__Created by", post.Creator },
-                        { "__Final Renderings", CreateFinalLayout(post.PostType, content, blocks)  }
+                        { "__Final Renderings", CreateFinalLayout(post.PostType, content, blocks ?? [])  }
                     };
 
                     if (isNewPressPost)
@@ -1163,7 +1185,7 @@ namespace SitecoreCommander.WordPress
                     {
                         Console.WriteLine("Created item: " + "/Home" + post.Link);
                         sitecoreids.Add("/Home" + post.Link.TrimEnd('/'), updated.itemIdEnclosedInBraces);
-                        CreateLocalDataSources(env, blocks, updated.itemIdEnclosedInBraces,language, mediaFolderPath, post.SitecoreItemName);
+                        CreateLocalDataSources(env, blocks ?? [], updated.itemIdEnclosedInBraces,language, mediaFolderPath, post.SitecoreItemName);
                     } else {
                         Console.WriteLine("Failed to create item: " + "/Home" + post.Link);
                         Console.WriteLine("Failed to create post.SitecoreItemName: " + post.SitecoreItemName);

@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Edge.Model
+namespace SitecoreCommander.Edge.Model
 {
     internal class Language
     {
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
     }
 }

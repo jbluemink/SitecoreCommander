@@ -8,25 +8,38 @@ namespace SitecoreCommander.Authoring
     {
         public static string SampleItemTemplateID = "{76036F5E-CBCE-46D1-AF0A-4143F9B557AA}";
 
-        internal static async Task<Created> Create(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, Dictionary<string, string> fields)
+        internal static async Task<Created?> Create(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, Dictionary<string, string> fields)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Create(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemname, templateId, parentID, language, fields);
+        }
+
+        internal static async Task<Created?> Create(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, Dictionary<string, string> fields)
+        {
+            return await Create(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemname, templateId, parentID, language, fields);
+        }
+
+        internal static async Task<Created?> Create(JwtContext context, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, Dictionary<string, string> fields, HashSet<string>? allowEmptyFields = null)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Create(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemname, templateId, parentID, language, fields, allowEmptyFields);
+        }
+
+        private static async Task<Created?> Create(AuthoringApiContext context, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, Dictionary<string, string> fields, HashSet<string>? allowEmptyFields = null)
+        {
 
             Console.WriteLine("Try to Create item " + itemname);
             string graphQLfields = string.Empty;
             foreach (var field in fields)
             {
-                graphQLfields += inputFieldFormat(field.Key, field.Value);
+                var useAllowEmpty = allowEmptyFields != null && allowEmptyFields.Contains(field.Key);
+                graphQLfields += useAllowEmpty ? inputFieldFormatAllowEmpty(field.Key, field.Value) : inputFieldFormat(field.Key, field.Value);
             }
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<CreateItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<CreateItem>(
+                context,
                 "mutation {" +
                 "createItem(" +
                 "input: {" +
@@ -61,6 +74,11 @@ namespace SitecoreCommander.Authoring
             {
                 return string.Empty;
             }
+            return "\r\n {name: \"" + name + "\", value: \"" + HttpUtility.JavaScriptStringEncode(value) + "\" }";
+        }
+
+        internal static string inputFieldFormatAllowEmpty(string name, string value)
+        {
             return "\r\n {name: \"" + name + "\", value: \"" + HttpUtility.JavaScriptStringEncode(value) + "\" }";
         }
 

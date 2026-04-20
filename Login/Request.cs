@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using SitecoreCommander.Authoring.Model;
@@ -27,6 +27,7 @@ namespace SitecoreCommander.Login
             object variables,
             CancellationToken cancellationToken,
             TimeSpan? requestTimeout = null) // Optional per-request timeout
+            where TResponse : class
         {
             var content = new StringContent(SerializeGraphQLCall(query, variables), Encoding.UTF8, "application/json");
             var httpRequestMessage = new HttpRequestMessage
@@ -50,7 +51,7 @@ namespace SitecoreCommander.Login
                 ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
                 : null;
             if (requestTimeout.HasValue)
-                cts.CancelAfter(requestTimeout.Value);
+                cts!.CancelAfter(requestTimeout.Value);
 
             try
             {
@@ -59,7 +60,7 @@ namespace SitecoreCommander.Login
                     cts?.Token ?? cancellationToken
                 ).ConfigureAwait(false);
 
-                if (response?.Content.Headers.ContentType?.MediaType == "application/json")
+                if (response.Content.Headers.ContentType?.MediaType == "application/json")
                 {
                     var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return DeserializeGraphQLCall<TResponse>(responseString);
@@ -81,7 +82,7 @@ namespace SitecoreCommander.Login
             byte[] fileBytes;
             string fileName;
 
-            if (Uri.TryCreate(filePathOrUrl, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+            if (Uri.TryCreate(filePathOrUrl, UriKind.Absolute, out var uri) && uri is not null && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
             {
                 // It's a URL, download the file
                 try
@@ -136,7 +137,7 @@ namespace SitecoreCommander.Login
 
             using (var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false))
             {
-                if (response?.Content.Headers.ContentType?.MediaType == "application/json")
+                if (response.Content.Headers.ContentType?.MediaType == "application/json")
                 {
                     var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return DeserializeGraphQLUploadCall(responseString);
@@ -156,15 +157,15 @@ namespace SitecoreCommander.Login
 
         public class GraphQLError
         {
-            public string Message { get; set; }
-            public List<GraphQLErrorLocation> Locations { get; set; }
-            public List<object> Path { get; set; }
+            public string Message { get; set; } = string.Empty;
+            public List<GraphQLErrorLocation> Locations { get; set; } = [];
+            public List<object> Path { get; set; } = [];
         }
 
-        public class GraphQLResponse<TResponse>
+        public class GraphQLResponse<TResponse> where TResponse : class
         {
-            public List<GraphQLError> Errors { get; set; }
-            public TResponse Data { get; set; }
+            public List<GraphQLError> Errors { get; set; } = [];
+            public TResponse Data { get; set; } = null!;
         }
 
         /// <summary>
@@ -195,14 +196,15 @@ namespace SitecoreCommander.Login
                 WriteIndented = false
             };
 
-            var result = JsonSerializer.Deserialize<Uploaded>(response, options);
-             return result;
+              var result = JsonSerializer.Deserialize<Uploaded>(response, options);
+              return result ?? new Uploaded();
         }
 
         /// <summary>
         /// Deserializes a GraphQL response.
         /// </summary>
         private static GraphQLResponse<TResponse> DeserializeGraphQLCall<TResponse>(string response)
+            where TResponse : class
         {
             var options = new JsonSerializerOptions
             {
@@ -211,7 +213,7 @@ namespace SitecoreCommander.Login
             };
 
             var result = JsonSerializer.Deserialize<GraphQLResponse<TResponse>>(response, options);
-            return result;
+            return result ?? new GraphQLResponse<TResponse>();
         }
     }
 }

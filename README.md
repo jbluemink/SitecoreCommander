@@ -1,90 +1,89 @@
 # SitecoreCommander
-SitecoreCommander is a tool designed for managing Sitecore instances, typically utilized by developers and administrators working with the Sitecore Content Management System (CMS). It helps in performing various administrative tasks by Using the API's. See [Using the Sitecore APIs with Sitecore Commander](https://www.stockpick.nl/sitecore/using-the-sitecore-apis-with-sitecore-commander/)
 
-For Sitecore IA also known as Sitecore XM Cloud and Sitecore 10.3+ 
+SitecoreCommander is a .NET automation toolkit for Sitecore XM Cloud (Sitecore IA) and Sitecore 10.3+.
 
-## Overview:
+It is built for developers, technical content teams, and administrators who need to execute reliable API-based operations at scale. Instead of doing isolated calls in tools like Postman or GraphQL Playground, SitecoreCommander helps you orchestrate complete workflows across multiple APIs with reusable C# code.
 
-SitecoreCommander and Visual Studio, providing a powerful scripting and automation framework for managing Sitecore environments. It allows developers and administrators to execute complex scripts and manage long-running tasks efficiently within Sitecore.
+The project is also designed for modern AI-assisted development workflows, including Vibe Coding and coding assistants such as GitHub Copilot. You can use it as a practical execution layer for AI-generated scripts, migration routines, and repeatable operational tasks.
 
-- Sitecore Agent API   RESTful API
-- Sitecore Authoring API   GraphQL API
-- Sitecore Edge API   GraphQL API
-- Sitecore ItemService RESTful API
-- WordPress XML
+## Overview
+SitecoreCommander provides a scripting and automation approach inside Visual Studio and .NET, with strong debugging, logging, and version-controlled code. It is suitable for both experimentation and production-ready automation, especially for long-running or multi-step operations.
 
-## Note:
-While SitecoreCommander offers a lot of possibilities, please be aware that this is the first version of the tool. For many functionalities, there isn't pre-existing code available, and you may need to add or customize the code yourself to meet your specific needs.
+It covers:
+- Sitecore Agent API (REST)
+- Sitecore Authoring API (GraphQL)
+- Sitecore Edge API (GraphQL)
+- Sitecore ItemService (REST)
+- WordPress XML import and transformation helpers
+- Optional Content Hub integration helpers
 
-## Key Features:
+## Why SitecoreCommander
+- API-first automation: Execute complex multi-call flows that go beyond single request tools.
+- Developer ergonomics: Use C#, debugging, and source control instead of ad-hoc scripts.
+- Safer operations: Prefer Sitecore APIs over elevated in-instance scripting for sensitive environments.
+- Scalable scripting: Handle long-running and resource-intensive tasks more reliably.
+- AI-ready foundation: Great for AI assistants that generate or refine migration and automation code.
 
-### Use Visual Studio:
+## Typical Use Cases
+- Content migration and bulk content updates
+- Automated creation, update, and deletion of items
+- Publication and versioning workflows
+- Repetitive maintenance and cleanup tasks
+- Data import/export and system integration pipelines
 
-- Utilize the full power of Visual Studio for programming in C# and executing Sitecore tasks.
-Benefit from Visual Studio’s AI Copilot Chat,advanced debugging features to troubleshoot and refine scripts.
-Complex Script Management:
+## Important Note
+This is an actively evolving toolkit. Some scenarios may require customization for your implementation model, templates, and governance rules. The codebase is intentionally extensible so you can adapt and grow it per project.
 
-- Handle more intricate scripts that require extensive logic or need to run over extended periods.
-Automate repetitive tasks, saving time and reducing the potential for human error.
-Enhanced Security:
+## What It Includes
+- Sitecore Authoring API (GraphQL)
+- Sitecore Agent API (REST)
+- Sitecore Edge API (GraphQL)
+- Sitecore ItemService (REST)
+- WordPress XML import helpers
+- Optional Content Hub integration helpers
 
-- For security reasons, Sitecore PowerShell Elevation is recommended only for local environments.
-SitecoreCommander mitigates these security concerns by only using various Sitecore APIs.
+## Quick Start
+1. Create or update local settings in `appsettings.Local.json`.
+2. Use `appsettings.example.json` as a template.
+3. Choose an authentication method:
+   - JWT client credentials (`JwtClientId` + `JwtClientSecret`)
+   - Sitecore CLI `user.json` (`XMCloudUserJsonPath`)
+4. Run:
+   - `dotnet build`
+   - `dotnet run`
 
-### Efficient Task Execution:
+## Authentication Options
+SitecoreCommander examples support two authentication paths:
 
-- Run long-running tasks without the hassle associated with traditional PowerShell scripting within Sitecore.
-Optimize task management, ensuring that resource-intensive operations are handled smoothly.
+1. `JWT` (automation/client credentials)
+   - Configure `SitecoreCommander:JwtClientId` and `SitecoreCommander:JwtClientSecret`.
+   - Recommended for unattended automation and Agent API examples.
 
-### API Interaction:
+2. `Sitecore CLI user.json` (developer context)
+   - Configure `SitecoreCommander:XMCloudUserJsonPath`.
+   - Recommended for interactive Authoring/Edge work with your CLI session context.
 
-- Tools like Postman, Firecamp.dev or GraphQL Playground are excellent for making single API calls to Sitecore, useful for testing and debugging.
-SitecoreCommander is ideal for scenarios requiring multiple API calls and complex scripting, offering a more robust solution for automation.
-Contain code for Sitecore Stream Agent API, Authoring, Edge and RESTful Sitecore API.
+### Create a valid user.json with Sitecore CLI
+1. Install Sitecore CLI (if not already installed):
+   - `dotnet tool install -g Sitecore.CLI`
+2. Authenticate:
+   - `dotnet sitecore cloud login`
+3. Confirm the file exists at:
+   - `%USERPROFILE%/.sitecore/user.json`
+4. Point `SitecoreCommander:XMCloudUserJsonPath` to that file.
 
-## Use Cases:
+## Configuration Priority
+1. `appsettings.Local.json`
+2. Environment variables (if a key is not set in local settings)
 
-### Automating Content Management:
-- Automate the creation, update, and deletion of content items in bulk, making it easier to manage large volumes of content.
+## Notes
+- `appsettings.Local.json` is intended for local values and should not be committed.
+- Publish operations should be executed explicitly; avoid automatic publish after write operations.
 
-### Deployment and Configuration:
-- Script deployment processes and configuration changes to ensure consistency across multiple Sitecore instances.
+## AI Agent Docs
+- `AI/AGENT_API_PLAYBOOK.md`
+- `AI/AGENT_PROMPT_TEMPLATE.md`
+- `AI/agent-api-index.json`
 
-### Maintenance Tasks:
-- Schedule and run maintenance scripts, such as cleaning up old versions or reindexing, to keep the Sitecore environment healthy.
-
-### Data Import/Export:
-- Automate the import and export of data between Sitecore and other systems, streamlining integration processes.
-
-## SETUP
-- use the Sitecore CLI to create a valid user.json (when you have multiple organisation, be sure you use the right organisation when connection to a non local XM Cloud)
-- edit the Config.cs and supply the values for your Sitecore 
-- edit the Program.cs and create the code you need.
-
-## Autentication
- - For the Authoring API, use the Sitecore CLI to log in, enabling user-based authentication with roles and permissions. In contrast, the Automation Client is designed for automated processes, using a service account that operates without user-specific access control.
- - For the Sitecore Stream Agent API you need to use the automation client from the portal, the Sitecore CLI does not give the scope you need for this API.
-### Recent Updates:
-- 19 July initial version with Remove Language/Version from a single item or a Tree of items
-- 9 August Added a move item methode and Move SubItems methode including an exclude option
-- 19 August Added RESTful API and an example of how to migrate a page item from an old Sitecore with REST api to XM Cloud with GraphQL
-- 24 August Added methodes to read and write item security and getSites methode
-- 15 September Added methodes to help limiting the number of items under any given node to 100 or less, by moving to multiple subfolders
-- 8 November Added UnpublishLanguageFromSubtree
-- 18 November Added generiek create item
-- 23 May 2025 Added AddMedia, Delete Item and Delete Subitems Except
-- 9 june 2025 Added WordPress to Sitecore Import Example
-- 11 july 2025 Added Replace Field method
-- 05 November 2025 Added Sitecore Stream Agent API example
-- 23 November 2025 Added more Sitecore Agent API examples
-- 9 December 2025 Added jobid methodes for Agent API
-- 29 January 2026 Added JwtHelper and Publish Methode for Authoring API
-
-### Error fixing
-
-Tip for search on authorings API you are depend on the SOLR index, especially when you are working local check on error like:
-```
-GraphQL returned errors:
-  - Solr schema is not populated for index 'sitecore_master_index'.
-
-Be sure you update is populated and fully indexed when using the search.
+## Troubleshooting
+If Authoring API search returns Solr schema/index errors, verify that the relevant index is populated and up to date.

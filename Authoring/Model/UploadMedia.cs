@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class UploadMedia
+    public class UploadMedia
     {
-        public PresignedUploadUrl uploadMedia { get; set; }
+        public PresignedUploadUrl uploadMedia { get; set; } = null!;
     }
 }

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-03-24",
+  "project": "SitecoreCommander",
+  "authProfiles": [
+    {
+      "id": "authoring-cli",
+      "description": "Use .sitecore user.json via Login.GetSitecoreEnvironment",
+      "inputs": ["EnvironmentConfiguration"],
+      "whenToUse": "Interactive developer workflows for Authoring/Edge/Command APIs with Sitecore CLI login context.",
+      "prechecks": [
+        "XMCloudUserJsonPath is configured",
+        "user.json file exists",
+        "endpoint can be resolved via EnvironmentName or defaultEndpoint"
+      ],
+      "example": "var env = SitecoreCommander.Lib.Login.GetSitecoreEnvironment(Config.EnvironmentName);"
+    },
+    {
+      "id": "jwt",
+      "description": "Use automation client token via SitecoreJwtClient.GetJwtAsync",
+      "inputs": ["JwtTokenResponse"],
+      "authoringExtra": ["host"],
+      "whenToUse": "Automation scenarios and all Agent API wrapper operations.",
+      "prechecks": [
+        "JwtClientId is configured",
+        "JwtClientSecret is configured"
+      ],
+      "example": "var token = await SitecoreCommander.Login.SitecoreJwtClient.GetJwtAsync();"
+    }
+  ],
+  "apiFamilies": [
+    {
+      "id": "agent",
+      "requires": ["jwt"],
+      "operations": [
+        "ListSites.GetSites",
+        "ListSitListPagesOfASitees.GetPages",
+        "RetrieveThePageDetails.GetItemById",
+        "RetrieveContentItemById.GetItemById",
+        "UpdateContentItem.UpdateItemById",
+        "DeleteContentItem.DeleteItemById",
+        "RetrieveJobDetails.GetJob",
+        "ListJobOperations.GetJob",
+        "RevertJob.Revert"
+      ]
+    },
+    {
+      "id": "authoring",
+      "requires": ["authoring-cli", "jwt"],
+      "operations": [
+        "AddItem.Create",
+        "AddItemVersion.Add",
+        "AddMedia.Create",
+        "DeleteItem.Delete",
+        "DeleteItemVersion.Delete",
+        "DeleteItemVersion.DeleteAll",
+        "GetItemChildren.Get",
+        "GetItemChildren.GetAll",
+        "GetItemFieldAndDescendants.SearchPagination",
+        "GetItemLayoutsAndDescendants.SearchPagination",
+        "GetItemSecurity.Get",
+        "GetItemSecurityAndDescendants.SearchPagination",
+        "MoveItem.Move",
+        "Publish.PublishItem",
+        "UpdateItem.Update",
+        "UpdateItemSecurity.UpdateItem",
+        "UpdateItemVersionUnpublish.UpdateItem"
+      ]
+    }
+  ],
+  "selectionRules": [
+    "Use the Authoring family as the default for complete content operations.",
+    "Use the Agent family for site/page listing, jobs, and stream-style updates.",
+    "Agent wrappers can be convenient but are often slower due to an additional abstraction layer.",
+    "Use the Authoring family for GraphQL item reads, writes, and publish operations.",
+    "Use the authoring-cli profile when user context and roles are required.",
+    "Use the jwt profile for automation and for token flows aligned with Agent API usage."
+  ],
+  "policies": {
+    "jobIdLoggingRequired": false,
+    "autoPublishAfterWrite": false,
+    "publishNotes": "Publish can be heavy and long-running; execute only as an explicit step."
+  },
+  "executionContract": {
+    "requiredFields": [
+      "api_family",
+      "auth_profile",
+      "operation",
+      "input_summary",
+      "prechecks",
+      "execution_steps",
+      "rollback_strategy",
+      "observability"
+    ]
+  }
+}

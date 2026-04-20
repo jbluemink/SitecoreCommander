@@ -1,8 +1,8 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class SearchWithFieldResult
+    public class SearchWithFieldResult
     {
-        public ResultSearchWithField search { get; set; }
+        public ResultSearchWithField search { get; set; } = null!;
 
     }
 }

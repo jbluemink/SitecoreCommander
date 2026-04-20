@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Edge.Model
+namespace SitecoreCommander.Edge.Model
 {
     internal class SearchPaginationItems
     {
-        public SearchPageInfo pageOne { get; set; }
+        public SearchPageInfo pageOne { get; set; } = null!;
     }
 }

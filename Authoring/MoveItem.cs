@@ -7,19 +7,22 @@ namespace SitecoreCommander.Authoring
     {
         internal static async Task<ResultItem?> Move(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath, string targetParentPath)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Move(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemPath, targetParentPath);
+        }
+
+        internal static async Task<ResultItem?> Move(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemPath, string targetParentPath)
+        {
+            return await Move(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemPath, targetParentPath);
+        }
+
+        private static async Task<ResultItem?> Move(AuthoringApiContext context, CancellationToken cancellationToken, string itemPath, string targetParentPath)
+        {
 
              Console.WriteLine("Try to Move item " + itemPath);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.MoveItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<SitecoreCommander.Authoring.Model.MoveItem>(
+                context,
                 "mutation MoveItem {" +
                 "moveItem(" +
                 "input: {" +
@@ -46,19 +49,22 @@ namespace SitecoreCommander.Authoring
 
         internal static async Task<ResultItem?> Move(EnvironmentConfiguration env, CancellationToken cancellationToken, Guid itemId, Guid targetParentId)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Move(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemId, targetParentId);
+        }
+
+        internal static async Task<ResultItem?> Move(JwtTokenResponse token, string host, CancellationToken cancellationToken, Guid itemId, Guid targetParentId)
+        {
+            return await Move(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemId, targetParentId);
+        }
+
+        private static async Task<ResultItem?> Move(AuthoringApiContext context, CancellationToken cancellationToken, Guid itemId, Guid targetParentId)
+        {
 
             Console.WriteLine("Try to Move item " + itemId);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.MoveItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<SitecoreCommander.Authoring.Model.MoveItem>(
+                context,
                 "mutation MoveItem {" +
                 "moveItem(" +
                 "input: {" +

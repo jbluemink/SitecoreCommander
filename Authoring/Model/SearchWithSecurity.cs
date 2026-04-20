@@ -1,8 +1,8 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class SearchWithSecurity
+    public class SearchWithSecurity
     {
-        public ResultSearchWithSecurity search { get; set; }
+        public ResultSearchWithSecurity search { get; set; } = null!;
 
     }
 }

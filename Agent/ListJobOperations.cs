@@ -20,22 +20,17 @@ namespace SitecoreCommander.Agent
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
 
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);
-            
+            string json = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            await AgentApiResponseHelper.LogTokenDiagnosticsAsync("ListJobOperations", agentApiEndpoint, token.scope);
+
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                // 404:, return null
                 Console.WriteLine("JobId:" + jobId + " not found");
                 return null;
             }
 
-            string json = await response.Content.ReadAsStringAsync(cancellationToken);
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            return JsonSerializer.Deserialize<List<ListJobOperationsResponse>>(json, options);
+            return AgentApiResponseHelper.DeserializeOrThrow<List<ListJobOperationsResponse>>(response, json, agentApiEndpoint);
         }
     }
 }

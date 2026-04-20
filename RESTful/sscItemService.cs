@@ -1,5 +1,7 @@
 ﻿using SitecoreCommander.RESTful.Model;
+using SitecoreCommander.Utils;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -7,9 +9,14 @@ namespace SitecoreCommander.RESTful
 {
     internal class SscItemService
     {
-        public static CookieContainer SourceLogIn()
+        private static string GetBaseUrl()
         {
-            var authUrl = Config.RestFullApiHostname + "/sitecore/api/ssc/auth/login";
+            return Config.RestFullApiHostname;
+        }
+
+        public static async Task<CookieContainer> SourceLogInAsync()
+        {
+            var authUrl = GetBaseUrl().TrimEnd('/') + "/sitecore/api/ssc/auth/login";
             var authData = new Authentication
             {
                 Domain = "sitecore",
@@ -17,184 +24,221 @@ namespace SitecoreCommander.RESTful
                 Password = Config.RestFullSitecorePassword
             };
 
-            var authRequest = (HttpWebRequest)WebRequest.Create(authUrl);
-
-            authRequest.Method = "POST";
-            authRequest.ContentType = "application/json";
-
-            var requestAuthBody = JsonSerializer.Serialize(authData);
-
-            var authDatas = new UTF8Encoding().GetBytes(requestAuthBody);
-
-            using (var dataStream = authRequest.GetRequestStream())
+            var cookies = new CookieContainer();
+            using var handler = new HttpClientHandler
             {
-                dataStream.Write(authDatas, 0, authDatas.Length);
-            }
+                CookieContainer = cookies,
+                UseCookies = true,
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            using var client = new HttpClient(handler);
+            using var content = new StringContent(JsonSerializer.Serialize(authData), Encoding.UTF8, "application/json");
+            using var response = await client.PostAsync(authUrl, content);
 
-            CookieContainer cookies = new CookieContainer();
-
-            authRequest.CookieContainer = cookies;
-
-            var authResponse = authRequest.GetResponse();
-
-            Console.WriteLine($"Login Status:\n\r{((HttpWebResponse)authResponse).StatusDescription}");
-
-            authResponse.Close();
+            response.EnsureSuccessStatusCode();
+            Console.WriteLine($"Login Status:\n\r{response.StatusCode}");
 
             return cookies;
         }
 
 
         //path needs to start with /sitecore
-        public static bool TestItemExists(string path, CookieContainer cookies)
+        public static async Task<bool> TestItemExistsAsync(string path, CookieContainer cookies)
         {
+            var url = GetBaseUrl().TrimEnd('/') + "/sitecore/api/ssc/item/?database=master&language=" + Config.DefaultLanguage + "&path=" + WebUtility.UrlEncode(path);
 
-            var url = Config.RestFullApiHostname + "/sitecore/api/ssc/item/?database=master&language=" + Config.DefaultLanguage + "&path=" + System.Web.HttpUtility.UrlEncode(path);
-
-            var request = (HttpWebRequest)WebRequest.Create(url);
-
-            request.Method = "GET";
-            request.ContentType = "application/json";
-            request.CookieContainer = cookies;
+            using var client = CreateClient(cookies);
 
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return true;
-                }
+                using var response = await client.GetAsync(url);
+                return response.StatusCode == HttpStatusCode.OK;
             }
-            catch (WebException)
+            catch (HttpRequestException)
             {
-
+                return false;
             }
-            return false;
         }
 
-        public static Guid? GetItemGuid(string path, CookieContainer cookies, string language)
+        public static async Task<Guid?> GetItemGuidAsync(string path, CookieContainer cookies, string language)
         {
+            var url = GetBaseUrl().TrimEnd('/') + "/sitecore/api/ssc/item/?database=master&language=" + language + "&path=" + WebUtility.UrlEncode(path);
 
-            var url = Config.RestFullApiHostname + "/sitecore/api/ssc/item/?database=master&language=" + language + "&path=" + System.Web.HttpUtility.UrlEncode(path);
-
-            var request = (HttpWebRequest)WebRequest.Create(url);
-
-            request.Method = "GET";
-            request.ContentType = "application/json";
-            request.CookieContainer = cookies;
+            using var client = CreateClient(cookies);
 
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
+                using var response = await client.GetAsync(url);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    using (Stream responseStream = response.GetResponseStream())
-                    {
-                        StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                        string json = reader.ReadToEnd();
-                        StandardSscItem jsonobject = JsonSerializer.Deserialize<StandardSscItem>(json);
-                        return jsonobject.ItemID;
-                    }
+                    var json = await response.Content.ReadAsStringAsync();
+                    var jsonobject = JsonSerializer.Deserialize<StandardSscItem>(json);
+                    return jsonobject?.ItemID;
                 }
             }
-            catch (WebException)
+            catch (HttpRequestException)
             {
-
             }
             return null;
         }
-        public static StandardSscItemExtended GetItem(string path, CookieContainer cookies, string language)
+
+        public static async Task<StandardSscItemExtended?> GetItemAsync(string path, CookieContainer cookies, string language)
         {
+            var url = GetBaseUrl().TrimEnd('/') + "/sitecore/api/ssc/item/?database=master&language=" + language + "&path=" + WebUtility.UrlEncode(path) + "&includeStandardTemplateFields=true&includeMetadata=true&fields";
 
-            var url = Config.RestFullApiHostname + "/sitecore/api/ssc/item/?database=master&language=" + language + "&path=" + System.Web.HttpUtility.UrlEncode(path) + "&includeStandardTemplateFields=true&includeMetadata=true&fields";
-
-            var request = (HttpWebRequest)WebRequest.Create(url);
-
-            request.Method = "GET";
-            request.ContentType = "application/json";
-            request.CookieContainer = cookies;
+            using var client = CreateClient(cookies);
 
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
+                using var response = await client.GetAsync(url);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    using (Stream responseStream = response.GetResponseStream())
-                    {
-                        StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                        string json = reader.ReadToEnd();
-                        StandardSscItemExtended jsonobject = JsonSerializer.Deserialize<StandardSscItemExtended>(json);
-                        return jsonobject;
-                    }
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<StandardSscItemExtended>(json);
                 }
             }
-            catch (WebException)
+            catch (HttpRequestException)
             {
-
             }
             return null;
         }
-        public static StandardSscItemExtended GetItemById(string id, CookieContainer cookies, string language)
+
+        public static async Task<StandardSscItemExtended?> GetItemByIdAsync(string id, CookieContainer cookies, string language)
         {
+            var url = GetBaseUrl().TrimEnd('/') + "/sitecore/api/ssc/item/" + id + "?database=master&language=" + language + "&includeStandardTemplateFields=true&includeMetadata=true&fields";
 
-            var url = Config.RestFullApiHostname + "/sitecore/api/ssc/item/" + id + "?database=master&language=" + language + "&includeStandardTemplateFields=true&includeMetadata=true&fields";
-
-            var request = (HttpWebRequest)WebRequest.Create(url);
-
-            request.Method = "GET";
-            request.ContentType = "application/json";
-            request.CookieContainer = cookies;
+            using var client = CreateClient(cookies);
 
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
+                using var response = await client.GetAsync(url);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    using (Stream responseStream = response.GetResponseStream())
-                    {
-                        StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                        string json = reader.ReadToEnd();
-                        StandardSscItemExtended jsonobject = JsonSerializer.Deserialize<StandardSscItemExtended>(json);
-                        return jsonobject;
-                    }
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<StandardSscItemExtended>(json);
                 }
             }
-            catch (WebException)
+            catch (HttpRequestException)
             {
-
             }
             return null;
         }
-        public static StandardSscItemExtended[] GetChilderen(string id, CookieContainer cookies, string language)
+
+        public static async Task<byte[]?> DownloadMediaBytesByIdAsync(string id, string language)
         {
+            var cookies = await SourceLogInAsync();
 
-            var url = Config.RestFullApiHostname + "/sitecore/api/ssc/item/" + id + "/children?database=master&language=" + language + "&includeStandardTemplateFields=true&includeMetadata=true&fields";
+            // Build /-/media/{compactGuid}.ashx directly from the item id — avoids shell/thumbnail URLs.
+            var cleanGuid = id.Trim().TrimStart('{').TrimEnd('}').Replace("-", string.Empty, StringComparison.Ordinal).ToUpperInvariant();
+            var mediaUrl = $"{GetBaseUrl().TrimEnd('/')}/-/media/{cleanGuid}.ashx";
+            await SimpleLogger.LogAsync($"[SSC] media-download-url | itemId={id} | url={mediaUrl}");
 
-            var request = (HttpWebRequest)WebRequest.Create(url);
+            using var client = CreateClient(cookies);
+            foreach (var candidate in BuildMediaUrlCandidates(mediaUrl))
+            {
+                using var response = await client.GetAsync(candidate);
+                if (!response.IsSuccessStatusCode)
+                {
+                    await SimpleLogger.LogAsync($"[SSC] media-download-failed | itemId={id} | status={(int)response.StatusCode} | url={candidate}");
+                    continue;
+                }
 
-            request.Method = "GET";
-            request.ContentType = "application/json";
-            request.CookieContainer = cookies;
+                var bytes = await response.Content.ReadAsByteArrayAsync();
+                if (bytes.Length == 0)
+                {
+                    await SimpleLogger.LogAsync($"[SSC] media-download-empty | itemId={id} | url={candidate}");
+                    continue;
+                }
+
+                await SimpleLogger.LogAsync($"[SSC] media-download-succeeded | itemId={id} | bytes={bytes.Length} | url={candidate}");
+                return bytes;
+            }
+
+            return null;
+        }
+
+        private static IEnumerable<string> BuildMediaUrlCandidates(string mediaUrl)
+        {
+            var urls = new List<string>();
+            void Add(string? url)
+            {
+                if (!string.IsNullOrWhiteSpace(url) && !urls.Contains(url, StringComparer.OrdinalIgnoreCase))
+                    urls.Add(url);
+            }
+
+            Add(mediaUrl);
+
+            // Try without query params (SSC often returns thumbnail URLs)
+            var queryIndex = mediaUrl.IndexOf('?', StringComparison.Ordinal);
+            if (queryIndex > 0)
+                Add(mediaUrl.Substring(0, queryIndex));
+
+            if (mediaUrl.Contains("/-/media/", StringComparison.OrdinalIgnoreCase))
+            {
+                Add(mediaUrl.Replace("/-/media/", "/~/media/", StringComparison.OrdinalIgnoreCase));
+                if (queryIndex > 0)
+                {
+                    var noQuery = mediaUrl.Substring(0, queryIndex);
+                    Add(noQuery.Replace("/-/media/", "/~/media/", StringComparison.OrdinalIgnoreCase));
+                }
+            }
+
+            if (mediaUrl.Contains("/~/media/", StringComparison.OrdinalIgnoreCase))
+            {
+                Add(mediaUrl.Replace("/~/media/", "/-/media/", StringComparison.OrdinalIgnoreCase));
+                if (queryIndex > 0)
+                {
+                    var noQuery = mediaUrl.Substring(0, queryIndex);
+                    Add(noQuery.Replace("/~/media/", "/-/media/", StringComparison.OrdinalIgnoreCase));
+                }
+            }
+
+            var guidMatch = System.Text.RegularExpressions.Regex.Match(
+                mediaUrl,
+                @"(?<id>[a-fA-F0-9]{32}|[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})\.ashx",
+                System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+            if (guidMatch.Success && Uri.TryCreate(mediaUrl, UriKind.Absolute, out var parsed))
+            {
+                var compact = guidMatch.Groups["id"].Value.Replace("-", string.Empty, StringComparison.Ordinal);
+                Add($"{parsed.Scheme}://{parsed.Authority}/sitecore/shell/Applications/-/media/{compact}.ashx");
+                Add($"{parsed.Scheme}://{parsed.Authority}/sitecore/shell/Applications/~/media/{compact}.ashx");
+            }
+
+            return urls;
+        }
+
+        public static async Task<StandardSscItemExtended[]?> GetChildrenAsync(string id, CookieContainer cookies, string language)
+        {
+            var url = GetBaseUrl().TrimEnd('/') + "/sitecore/api/ssc/item/" + id + "/children?database=master&language=" + language + "&includeStandardTemplateFields=true&includeMetadata=true&fields";
+
+            using var client = CreateClient(cookies);
 
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
+                using var response = await client.GetAsync(url);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    using (Stream responseStream = response.GetResponseStream())
-                    {
-                        StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                        string json = reader.ReadToEnd();
-                        StandardSscItemExtended[] jsonobject = JsonSerializer.Deserialize<StandardSscItemExtended[]>(json);
-                        return jsonobject;
-                    }
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<StandardSscItemExtended[]>(json);
                 }
             }
-            catch (WebException)
+            catch (HttpRequestException)
             {
-
             }
             return null;
+        }
+
+        private static HttpClient CreateClient(CookieContainer cookies)
+        {
+            var handler = new HttpClientHandler
+            {
+                CookieContainer = cookies,
+                UseCookies = true,
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            return new HttpClient(handler);
         }
     }
 }

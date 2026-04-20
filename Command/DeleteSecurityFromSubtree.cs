@@ -26,7 +26,7 @@ namespace SitecoreCommander.Command
                     }
                     else
                     {
-                        SearchWithSecurity result;
+                        SearchWithSecurity? result;
                         int paginationPage = 0;
                         int pageSize = 5;
                         int totalResult = 0;
@@ -34,8 +34,12 @@ namespace SitecoreCommander.Command
                         do
                         {
                             //not possible currently to filter on security, so get all items and filter in code
-                             result = await GetItemSecurityAndDescendants.SearchPagination(env, cts.Token, subtreeroot.id, pageSize, paginationPage, language);
-                             paginationPage++;
+                            result = await GetItemSecurityAndDescendants.SearchPagination(env, cts.Token, subtreeroot.id, pageSize, paginationPage, language);
+                            if (result?.search == null)
+                            {
+                                break;
+                            }
+                            paginationPage++;
                             totalResult = result.search.totalCount;
                             //first get all items to modify, because when you alread start editing it might effect the pagination.
                             if (result.search.results != null)

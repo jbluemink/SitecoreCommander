@@ -8,17 +8,17 @@ namespace SitecoreCommander.Edge
         /// <summary>
         /// get item by path or id
         /// </summary>
-        internal static async Task<ResultGetItem> GetSitecoreItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath)
+        internal static async Task<ResultGetItem?> GetSitecoreItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath)
         {
             return await GetSitecoreItem(env, cancellationToken, itemPath, Config.DefaultLanguage);
         }
 
-        internal static async Task<ResultGetItem> GetSitecoreItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath, string language)
+        internal static async Task<ResultGetItem?> GetSitecoreItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath, string language)
         {
             string graphqlendpoint = env.Host;
             if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
             graphqlendpoint += "sitecore/api/graph/edge/";
-            string apikey = Config.apikey;//userJson.endpoints.@default.accessToken;
+            string apikey = EdgeHelper.ResolveApiKey();
 
             Console.WriteLine("Searching for Sitecore Item:" + itemPath);
 
@@ -47,7 +47,7 @@ item(path:""{itemPath}"", language: ""{language}"") {{
             // Examine the GraphQL response to see if any errors were encountered
             if (result.Errors?.Count > 0)
             {
-                Console.WriteLine($"GraphQL returned errors:\n{string.Join("\n", result.Errors.Select(x => $"  - {x.Message}"))}");
+                Console.WriteLine($"GraphQL returned errors:\n{EdgeHelper.FormatGraphQlErrorsWithGuidance(result.Errors)}");
                 return null;
             }
 

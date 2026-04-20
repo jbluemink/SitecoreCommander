@@ -1,9 +1,9 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class PageInfo
+    public class PageInfo
     {
         public bool hasNextPage { get; set; }
-        public string endCursor { get; set; }
+        public string endCursor { get; set; } = string.Empty;
 
     }
 }

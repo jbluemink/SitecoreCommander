@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Edge.Model
+namespace SitecoreCommander.Edge.Model
 { 
     internal class ResultChilderenResults
     {
-        public ResultGetItem[] results { get; set; }
+        public ResultGetItem[] results { get; set; } = Array.Empty<ResultGetItem>();
     }
 }

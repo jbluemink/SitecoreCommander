@@ -15,22 +15,34 @@ namespace SitecoreCommander.Authoring
         /// <summary>
         /// Sample method which calls a GraphQL endpoint.
         /// </summary>
-        internal static async Task<Created> CreateLabelPageItem(EnvironmentConfiguration env, CookieContainer cookies, CancellationToken cancellationToken, string itemname, Guid parentID, StandardSscItemExtended xpItem, string templateID, string[] additionalLanguages)
+        internal static async Task<Created?> CreateLabelPageItem(EnvironmentConfiguration env, CookieContainer cookies, CancellationToken cancellationToken, string itemname, Guid parentID, StandardSscItemExtended xpItem, string templateID, string[] additionalLanguages)
+        {
+            return await CreateLabelPageItem(AuthoringApiContext.FromEnvironment(env), cookies, cancellationToken, itemname, parentID, xpItem, templateID, additionalLanguages);
+        }
+
+        internal static async Task<Created?> CreateLabelPageItem(JwtTokenResponse token, string host, CookieContainer cookies, CancellationToken cancellationToken, string itemname, Guid parentID, StandardSscItemExtended xpItem, string templateID, string[] additionalLanguages)
+        {
+            return await CreateLabelPageItem(AuthoringApiContext.FromJwt(token, host), cookies, cancellationToken, itemname, parentID, xpItem, templateID, additionalLanguages);
+        }
+
+        internal static async Task<Created?> CreateLabelPageItem(JwtContext context, CookieContainer cookies, CancellationToken cancellationToken, string itemname, Guid parentID, StandardSscItemExtended xpItem, string templateID, string[] additionalLanguages)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await CreateLabelPageItem(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cookies, cancellationToken, itemname, parentID, xpItem, templateID, additionalLanguages);
+        }
+
+        private static async Task<Created?> CreateLabelPageItem(AuthoringApiContext context, CookieContainer cookies, CancellationToken cancellationToken, string itemname, Guid parentID, StandardSscItemExtended xpItem, string templateID, string[] additionalLanguages)
         {
             string language = Config.DefaultLanguage;
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
 
             Console.WriteLine("Try to Create item " + itemname);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<CreateItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<CreateItem>(
+                context,
                 "mutation {" +
                 "createItem(" +
                 "input: {" +
@@ -68,37 +80,67 @@ namespace SitecoreCommander.Authoring
             Console.WriteLine($"Item created with Id: {result.Data.createItem.item.itemId} ");
             foreach(string additionallanguage in additionalLanguages)
             {
-                var translate = await TranslatePageItem(env, cookies, cancellationToken, result.Data.createItem.item.itemId, xpItem, additionallanguage);
+                var translate = await TranslatePageItem(context, cookies, cancellationToken, result.Data.createItem.item.itemId, xpItem, additionallanguage);
             }
             return result.Data.createItem.item;
         }
 
-        internal static async Task<Created> TranslatePageItem(EnvironmentConfiguration env, CookieContainer cookies, CancellationToken cancellationToken, string xmClouditemId, StandardSscItemExtended xpItem, string language)
+        internal static async Task<Created?> TranslatePageItem(EnvironmentConfiguration env, CookieContainer cookies, CancellationToken cancellationToken, string xmClouditemId, StandardSscItemExtended xpItem, string language)
         {
-            var xpSecondLanguage = SscItemService.GetItemById(xpItem.ItemID.ToString("B").ToUpper(), cookies, language);
-            if (string.IsNullOrEmpty(xpSecondLanguage.__Revision))
+            return await TranslatePageItem(AuthoringApiContext.FromEnvironment(env), cookies, cancellationToken, xmClouditemId, xpItem, language);
+        }
+
+        internal static async Task<Created?> TranslatePageItem(JwtTokenResponse token, string host, CookieContainer cookies, CancellationToken cancellationToken, string xmClouditemId, StandardSscItemExtended xpItem, string language)
+        {
+            return await TranslatePageItem(AuthoringApiContext.FromJwt(token, host), cookies, cancellationToken, xmClouditemId, xpItem, language);
+        }
+
+        internal static async Task<Created?> TranslatePageItem(JwtContext context, CookieContainer cookies, CancellationToken cancellationToken, string xmClouditemId, StandardSscItemExtended xpItem, string language)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await TranslatePageItem(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cookies, cancellationToken, xmClouditemId, xpItem, language);
+        }
+
+        private static async Task<Created?> TranslatePageItem(AuthoringApiContext context, CookieContainer cookies, CancellationToken cancellationToken, string xmClouditemId, StandardSscItemExtended xpItem, string language)
+        {
+            var xpSecondLanguage = await SscItemService.GetItemByIdAsync(xpItem.ItemID.ToString("B").ToUpper(), cookies, language);
+            if (xpSecondLanguage == null || string.IsNullOrEmpty(xpSecondLanguage.__Revision))
             {
                 return null;
             }
-            var version = await AddItemVersion.Add(env, cancellationToken, xmClouditemId, language);
-            return await UpdateVersionedFieldsLabelPageItem(env, cancellationToken, xmClouditemId, xpSecondLanguage, language);
+            var version = await AddItemVersion.Add(context, cancellationToken, xmClouditemId, language);
+            return await UpdateVersionedFieldsLabelPageItem(context, cancellationToken, xmClouditemId, xpSecondLanguage, language);
         }
 
-        internal static async Task<Created> UpdateVersionedFieldsLabelPageItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, StandardSscItemExtended xpItem, string language)
+        internal static async Task<Created?> UpdateVersionedFieldsLabelPageItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, StandardSscItemExtended xpItem, string language)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await UpdateVersionedFieldsLabelPageItem(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemId, xpItem, language);
+        }
 
+        internal static async Task<Created?> UpdateVersionedFieldsLabelPageItem(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemId, StandardSscItemExtended xpItem, string language)
+        {
+            return await UpdateVersionedFieldsLabelPageItem(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemId, xpItem, language);
+        }
+
+        internal static async Task<Created?> UpdateVersionedFieldsLabelPageItem(JwtContext context, CancellationToken cancellationToken, string itemId, StandardSscItemExtended xpItem, string language)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await UpdateVersionedFieldsLabelPageItem(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemId, xpItem, language);
+        }
+
+        private static async Task<Created?> UpdateVersionedFieldsLabelPageItem(AuthoringApiContext context, CancellationToken cancellationToken, string itemId, StandardSscItemExtended xpItem, string language)
+        {
             Console.WriteLine("Try to Add version data for item " + itemId);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<UpdateItemResponse>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<UpdateItemResponse>(
+                context,
                 "mutation UpdateItem {" +
                 "updateItem(" +
                 "input: {" +

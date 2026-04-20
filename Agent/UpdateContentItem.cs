@@ -1,4 +1,4 @@
-﻿using SitecoreCommander.Agent.Model;
+using SitecoreCommander.Agent.Model;
 using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Login;
@@ -26,7 +26,7 @@ namespace SitecoreCommander.Agent
             using HttpClient client = new();
             if (jobid != null && !string.IsNullOrWhiteSpace(jobid))
             {
-                await SimpleLogger.Log("jobid: " + jobid + " update item:"+ itemId);
+                await SimpleLogger.LogAsync("jobid: " + jobid + " update item:"+ itemId);
                 client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
             }
             if (versionName != null && !string.IsNullOrWhiteSpace(versionName))
@@ -59,7 +59,12 @@ namespace SitecoreCommander.Agent
                 PropertyNameCaseInsensitive = true
             };
             var responseValue = JsonSerializer.Deserialize<UpdateContentItemResponse>(json, options);
-            responseValue!.__jobid = jobid;
+            if (responseValue == null)
+            {
+                return null;
+            }
+
+            responseValue.__jobid = jobid ?? string.Empty;
 
             if (request.StatusCode != System.Net.HttpStatusCode.OK)
             {

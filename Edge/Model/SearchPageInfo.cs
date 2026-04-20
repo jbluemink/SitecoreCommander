@@ -1,9 +1,9 @@
-﻿namespace SitecoreCommander.Edge.Model
+namespace SitecoreCommander.Edge.Model
 {
     internal class SearchPageInfo
     {
         public int total { get; set; }
-        public PageInfo pageInfo { get; set; }
-        public SearchResultItem[] results { get; set; }
+        public PageInfo pageInfo { get; set; } = null!;
+        public SearchResultItem[] results { get; set; } = Array.Empty<SearchResultItem>();
     }
 }

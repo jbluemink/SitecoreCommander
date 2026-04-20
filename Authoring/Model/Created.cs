@@ -1,8 +1,8 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class Created
+    public class Created
     {
-        public string itemId { get; set; }
+        public string itemId { get; set; } = string.Empty;
 
         public string itemIdEnclosedInBraces
         {

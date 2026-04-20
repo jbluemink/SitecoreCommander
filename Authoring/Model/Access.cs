@@ -1,6 +1,6 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class Access
+    public class Access
     {
         public bool canWrite { get; set; }
         public bool canDelete { get; set; }

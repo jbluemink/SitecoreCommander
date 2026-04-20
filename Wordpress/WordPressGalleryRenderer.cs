@@ -46,8 +46,8 @@ public class WordPressGalleryRenderer
         {
             foreach (var imgNode in imageNodes)
             {
-                var src = imgNode.GetAttributeValue("src", null);
-                var alt = imgNode.GetAttributeValue("alt", null);
+                var src = imgNode.GetAttributeValue("src", string.Empty);
+                var alt = imgNode.GetAttributeValue("alt", string.Empty);
                 var classAttr = imgNode.GetAttributeValue("class", "");
                 int mediaId = -1;
 

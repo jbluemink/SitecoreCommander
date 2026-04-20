@@ -41,7 +41,7 @@ public static class JwtTokenHelper
 
     public static string GetInstanceUrlFromJwt(string accessToken)
     {
-        string tenant = GetTenantNameFromJwt(accessToken);
-        return $"https://xmc-{tenant}.sitecorecloud.io/";
+        string? tenant = GetTenantNameFromJwt(accessToken);
+        return $"https://xmc-{tenant ?? string.Empty}.sitecorecloud.io/";
     }
 }

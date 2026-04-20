@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Edge.Model
+namespace SitecoreCommander.Edge.Model
 {
     internal class ResultValue
     {
-        public string value { get; set; }
+        public string value { get; set; } = string.Empty;
     }
 }

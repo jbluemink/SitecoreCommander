@@ -3,8 +3,9 @@ using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Edge;
 using SitecoreCommander.Login;
+using SitecoreCommander.Authoring;
 
-namespace RaiXpToCloudMigrator.XmCloud
+namespace SitecoreCommander.Authoring
 {
     internal class CreateFolderItem
     {
@@ -15,7 +16,7 @@ namespace RaiXpToCloudMigrator.XmCloud
         /// Sample method which calls a GraphQL endpoint.
         /// </summary>
         /// 
-        internal static async Task<Created> CreateMapOrAddVersion(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string path, string language)
+        internal static async Task<Created?> CreateMapOrAddVersion(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string path, string language)
         {
             var createresult = await CreateMap(env, cancellationToken, itemname, templateId, parentID, language, new string[] { });
             if (createresult != null)
@@ -26,7 +27,7 @@ namespace RaiXpToCloudMigrator.XmCloud
             //creat is failed, check if item exist in en
             if (language != "en")
             {
-                ResultGetItem itemen = await GetItem.GetSitecoreItem(env, cancellationToken, path, "en");
+                ResultGetItem? itemen = await GetItem.GetSitecoreItem(env, cancellationToken, path, "en");
 
                 if (itemen != null)
                 {
@@ -38,21 +39,33 @@ namespace RaiXpToCloudMigrator.XmCloud
 
         }
 
-        internal static async Task<Created> CreateMap(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, string[] additionalLanguages)
+        internal static async Task<Created?> CreateMap(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, string[] additionalLanguages)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await CreateMap(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemname, templateId, parentID, language, additionalLanguages);
+        }
+
+        internal static async Task<Created?> CreateMap(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, string[] additionalLanguages)
+        {
+            return await CreateMap(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemname, templateId, parentID, language, additionalLanguages);
+        }
+
+        internal static async Task<Created?> CreateMap(JwtContext context, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, string[] additionalLanguages)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await CreateMap(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemname, templateId, parentID, language, additionalLanguages);
+        }
+
+        private static async Task<Created?> CreateMap(AuthoringApiContext context, CancellationToken cancellationToken, string itemname, string templateId, string parentID, string language, string[] additionalLanguages)
+        {
 
             Console.WriteLine("Try to Create item " + itemname);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<CreateItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<CreateItem>(
+                context,
                 "mutation {" +
                 "createItem(" +
                 "input: {" +
@@ -78,31 +91,56 @@ namespace RaiXpToCloudMigrator.XmCloud
             Console.WriteLine($"Folder Item created with Id: {result.Data.createItem.item.itemId} ");
             foreach (string additionallanguage in additionalLanguages)
             {
-                var translate = await Addversion(env, cancellationToken, itemname, templateId, result.Data.createItem.item.itemId, language);
+                var translate = await Addversion(context, cancellationToken, itemname, templateId, result.Data.createItem.item.itemId, language);
             }
             return result.Data.createItem.item;
         }
 
-        internal static async Task<Created> CreateHiddenDataFolderEnglish(EnvironmentConfiguration env, string itemname, string parentID, CancellationToken cancellationToken)
+        internal static async Task<Created?> CreateHiddenDataFolderEnglish(EnvironmentConfiguration env, string itemname, string parentID, CancellationToken cancellationToken)
         {
             // Await the result of CreateHiddenDataFolder to fix CS1998
             return await CreateHiddenDataFolder(env, cancellationToken, itemname, parentID, "en");
         }
-        internal static async Task<Created> CreateHiddenDataFolder(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string parentID, string language)
+
+        internal static async Task<Created?> CreateHiddenDataFolderEnglish(JwtTokenResponse token, string host, string itemname, string parentID, CancellationToken cancellationToken)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await CreateHiddenDataFolder(token, host, cancellationToken, itemname, parentID, "en");
+        }
+
+        internal static async Task<Created?> CreateHiddenDataFolderEnglish(JwtContext context, string itemname, string parentID, CancellationToken cancellationToken)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await CreateHiddenDataFolder(context, cancellationToken, itemname, parentID, "en");
+        }
+
+        internal static async Task<Created?> CreateHiddenDataFolder(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string parentID, string language)
+        {
+            return await CreateHiddenDataFolder(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemname, parentID, language);
+        }
+
+        internal static async Task<Created?> CreateHiddenDataFolder(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemname, string parentID, string language)
+        {
+            return await CreateHiddenDataFolder(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemname, parentID, language);
+        }
+
+        internal static async Task<Created?> CreateHiddenDataFolder(JwtContext context, CancellationToken cancellationToken, string itemname, string parentID, string language)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await CreateHiddenDataFolder(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemname, parentID, language);
+        }
+
+        private static async Task<Created?> CreateHiddenDataFolder(AuthoringApiContext context, CancellationToken cancellationToken, string itemname, string parentID, string language)
+        {
 
             Console.WriteLine("Try to Create item " + itemname);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<CreateItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<CreateItem>(
+                context,
                 "mutation {" +
                 "createItem(" +
                 "input: {" +
@@ -131,21 +169,33 @@ namespace RaiXpToCloudMigrator.XmCloud
         }
 
 
-        internal static async Task<Created> Addversion(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string itemID, string language)
+        internal static async Task<Created?> Addversion(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemname, string templateId, string itemID, string language)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Addversion(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemname, templateId, itemID, language);
+        }
+
+        internal static async Task<Created?> Addversion(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemname, string templateId, string itemID, string language)
+        {
+            return await Addversion(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemname, templateId, itemID, language);
+        }
+
+        internal static async Task<Created?> Addversion(JwtContext context, CancellationToken cancellationToken, string itemname, string templateId, string itemID, string language)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Addversion(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemname, templateId, itemID, language);
+        }
+
+        private static async Task<Created?> Addversion(AuthoringApiContext context, CancellationToken cancellationToken, string itemname, string templateId, string itemID, string language)
+        {
 
             Console.WriteLine("Try to add version " + itemname);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<CreateItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<CreateItem>(
+                context,
                 "mutation addItemVersion {" +
                 "addItemVersion(" +
                 "input: {" +

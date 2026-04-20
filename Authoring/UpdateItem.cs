@@ -9,25 +9,49 @@ namespace SitecoreCommander.Authoring
     internal class UpdateItem
     {
 
-        internal static async Task<Created> Update(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string language, Dictionary<string, string> fields)
+        internal static async Task<Created?> Update(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string language, Dictionary<string, string> fields)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Update(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemId, language, fields);
+        }
+
+        internal static async Task<Created?> Update(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemId, string language, Dictionary<string, string> fields)
+        {
+            return await Update(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemId, language, fields);
+        }
+
+        internal static async Task<Created?> Update(JwtContext context, CancellationToken cancellationToken, string itemId, string language, Dictionary<string, string> fields)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Update(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemId, language, fields);
+        }
+
+        internal static async Task<Created?> Update(JwtContext context, CancellationToken cancellationToken, string itemId, string language, Dictionary<string, string> fields, HashSet<string>? allowEmptyFields)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Update(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemId, language, fields, allowEmptyFields);
+        }
+
+        private static async Task<Created?> Update(AuthoringApiContext context, CancellationToken cancellationToken, string itemId, string language, Dictionary<string, string> fields, HashSet<string>? allowEmptyFields = null)
+        {
 
             Console.WriteLine("Try to update some field for item " + itemId);
             string graphQLfields = string.Empty;
             foreach (var field in fields)
             {
-                graphQLfields += inputFieldFormat(field.Key, field.Value);
+                var useAllowEmpty = allowEmptyFields != null && allowEmptyFields.Contains(field.Key);
+                graphQLfields += useAllowEmpty
+                    ? inputFieldFormatAllowEmpty(field.Key, field.Value)
+                    : inputFieldFormat(field.Key, field.Value);
             }
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<UpdateItemResponse>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<UpdateItemResponse>(
+                context,
                 "mutation UpdateItem {" +
                 "updateItem(" +
                 "input: {" +

@@ -8,12 +8,27 @@ namespace SitecoreCommander.Authoring
     internal class GetItemFieldAndDescendants
     {
 
-        internal static async Task<SearchWithFieldResult> SearchPagination(EnvironmentConfiguration env, CancellationToken cancellationToken, string rootId, string fieldname, int pageSize, int page, string language, string? templateName = null)
+        internal static async Task<SearchWithFieldResult?> SearchPagination(EnvironmentConfiguration env, CancellationToken cancellationToken, string rootId, string fieldname, int pageSize, int page, string language, string? templateName = null)
+      {
+        return await SearchPagination(AuthoringApiContext.FromEnvironment(env), cancellationToken, rootId, fieldname, pageSize, page, language, templateName);
+      }
+
+      internal static async Task<SearchWithFieldResult?> SearchPagination(JwtTokenResponse token, string host, CancellationToken cancellationToken, string rootId, string fieldname, int pageSize, int page, string language, string? templateName = null)
+      {
+        return await SearchPagination(AuthoringApiContext.FromJwt(token, host), cancellationToken, rootId, fieldname, pageSize, page, language, templateName);
+      }
+
+      internal static async Task<SearchWithFieldResult?> SearchPagination(JwtContext context, CancellationToken cancellationToken, string rootId, string fieldname, int pageSize, int page, string language, string? templateName = null)
+      {
+        if (context == null)
+          throw new ArgumentNullException(nameof(context));
+        return await SearchPagination(AuthoringApiContext.FromJwt(
+            new JwtTokenResponse { access_token = context.AccessToken }, 
+            context.Host), cancellationToken, rootId, fieldname, pageSize, page, language, templateName);
+      }
+
+      private static async Task<SearchWithFieldResult?> SearchPagination(AuthoringApiContext context, CancellationToken cancellationToken, string rootId, string fieldname, int pageSize, int page, string language, string? templateName = null)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
             string rootidlowercase = rootId.Replace("-", "").Replace("}", "").Replace("}", "").ToLower();
 
             Console.WriteLine("Try to search items with authoring api rootid" + rootidlowercase);
@@ -27,11 +42,8 @@ namespace SitecoreCommander.Authoring
             }
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables  
-            var result = await Request.CallGraphQLAsync<SearchWithFieldResult>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<SearchWithFieldResult>(
+              context,
                  $@"query ($criteria: [SearchCriteriaInput!]!, $pagesize:Int! $page:Int! $language:String!){{  
      search(  
        query: {{  

@@ -1,5 +1,4 @@
 ﻿using SitecoreCommander.Edge;
-using RaiXpToCloudMigrator.XmCloud;
 using SitecoreCommander.Authoring;
 using SitecoreCommander.Authoring.Model;
 
@@ -20,6 +19,11 @@ namespace SitecoreCommander.Command
                 try
                 {
                     var rootItem = await GetItemSecurity.Get(env, cts.Token, path);
+                    if (rootItem == null)
+                    {
+                        Console.WriteLine("root item not found: " + path);
+                        return false;
+                    }
                     var childs = await GetItemChildren.GetAll(env, cts.Token, path);
                     if (childs == null)
                     {
@@ -54,7 +58,7 @@ namespace SitecoreCommander.Command
             var monthFolderPath = rootItem.path + "/" + month.ToString();
 
             // Check if the result is already in cache
-            if (cache.TryGetValue(monthFolderPath, value: out string cachedMonthFolderPath))
+            if (cache.TryGetValue(monthFolderPath, value: out string? cachedMonthFolderPath))
             {
                 return cachedMonthFolderPath;
             }

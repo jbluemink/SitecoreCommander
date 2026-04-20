@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class ResultValue
+    public class ResultValue
     {
-        public string value { get; set; }
+        public string value { get; set; } = string.Empty;
     }
 }

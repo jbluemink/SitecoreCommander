@@ -118,7 +118,7 @@ public class SmalleContentRenderer
                 break;
 
             case "a":
-                string? href = node.GetAttributeValue("href", null);
+                string? href = node.Attributes["href"]?.Value;
                 string linkText = node.InnerText.Trim();
                 if (!string.IsNullOrEmpty(href))
                 {
@@ -163,8 +163,8 @@ public class SmalleContentRenderer
                 var imgNode = node.Name == "img" ? node : node.SelectSingleNode(".//img");
                 if (imgNode != null)
                 {
-                    string? src = imgNode.GetAttributeValue("src", null);
-                    string? alt = imgNode.GetAttributeValue("alt", null);
+                    string? src = imgNode.Attributes["src"]?.Value;
+                    string? alt = imgNode.Attributes["alt"]?.Value;
 
                     blocks.Add(new SmalleContentBlock
                     {
@@ -272,7 +272,7 @@ public class SmalleContentRenderer
         if (string.IsNullOrEmpty(src))
             return null;
 
-        // Simpel voorbeeld: als de bron een GUID bevat, probeer hem eruit te halen
+        // Simple fallback: if the source contains a GUID, try to extract it.
         var match = Regex.Match(src, @"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
         if (match.Success)
         {

@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class CreatedItem
+    public class CreatedItem
     {
-        public Created item { get; set; }
+        public Created item { get; set; } = null!;
     }
 }

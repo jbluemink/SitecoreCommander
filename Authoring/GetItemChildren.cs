@@ -9,18 +9,38 @@ namespace SitecoreCommander.Authoring
     {
 
         internal static async Task<List<ResultItemWithSecurity>> GetAll(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath)
+      {
+        return await GetAll(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemPath);
+      }
+
+      internal static async Task<List<ResultItemWithSecurity>> GetAll(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemPath)
+      {
+        return await GetAll(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemPath);
+      }
+
+      internal static async Task<List<ResultItemWithSecurity>> GetAll(JwtContext context, CancellationToken cancellationToken, string itemPath)
+      {
+        if (context == null)
+          throw new ArgumentNullException(nameof(context));
+        return await GetAll(AuthoringApiContext.FromJwt(
+            new JwtTokenResponse { access_token = context.AccessToken }, 
+            context.Host), cancellationToken, itemPath);
+      }
+
+      private static async Task<List<ResultItemWithSecurity>> GetAll(AuthoringApiContext context, CancellationToken cancellationToken, string itemPath)
         {
             List<ResultItemWithSecurity> result = new List<ResultItemWithSecurity>();
             var hasnext = false;
             string cursor = string.Empty;
             do
             {
-                var callResult = await Get(env, cancellationToken, itemPath, cursor);
+          var callResult = await Get(context, cancellationToken, itemPath, cursor);
                 if (callResult != null)
                 {
-                    hasnext = callResult.pageInfo.hasNextPage;
-                    cursor = callResult.pageInfo.endCursor;
-                    result.AddRange(callResult.nodes);
+              hasnext = callResult.pageInfo?.hasNextPage ?? false;
+              cursor = callResult.pageInfo?.endCursor ?? string.Empty;
+              if (callResult.nodes != null && callResult.nodes.Length > 0)
+                result.AddRange(callResult.nodes);
                 } else
                 {
                     hasnext = false;
@@ -31,23 +51,34 @@ namespace SitecoreCommander.Authoring
         }
 
         internal static async Task<ResultItemChildrenWithSecurityChildren?> Get(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath, string cursor)
-        {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+          {
+            return await Get(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemPath, cursor);
+          }
 
+          internal static async Task<ResultItemChildrenWithSecurityChildren?> Get(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemPath, string cursor)
+          {
+            return await Get(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemPath, cursor);
+          }
+
+          internal static async Task<ResultItemChildrenWithSecurityChildren?> Get(JwtContext context, CancellationToken cancellationToken, string itemPath, string cursor)
+          {
+            if (context == null)
+              throw new ArgumentNullException(nameof(context));
+            return await Get(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemPath, cursor);
+          }
+
+          private static async Task<ResultItemChildrenWithSecurityChildren?> Get(AuthoringApiContext context, CancellationToken cancellationToken, string itemPath, string cursor)
+        {
              Console.WriteLine("Try to get childeren from: " + itemPath);
 
             GraphQLResponse< ItemWithSecurityChildren> result;
             if (string.IsNullOrEmpty(cursor))
             {
                 // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-                result = await Request.CallGraphQLAsync<ItemWithSecurityChildren>(
-                    new Uri(graphqlendpoint),
-                    HttpMethod.Post,
-                    accessToken,
-                    "",
+              result = await AuthoringGraphQl.ExecuteAsync<ItemWithSecurityChildren>(
+                context,
                     $@"query {{
   item(where: {{ path: ""{itemPath}""}}) {{
     children {{
@@ -82,11 +113,8 @@ namespace SitecoreCommander.Authoring
                     cancellationToken);
             } else
             {
-                result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.ItemWithSecurityChildren>(
-                    new Uri(graphqlendpoint),
-                    HttpMethod.Post,
-                    accessToken,
-                    "",
+                  result = await AuthoringGraphQl.ExecuteAsync<SitecoreCommander.Authoring.Model.ItemWithSecurityChildren>(
+                    context,
                     $@"query {{
   item(where: {{ path: ""{itemPath}""}}) {{
     children(after: ""{cursor}"") {{
@@ -122,14 +150,24 @@ namespace SitecoreCommander.Authoring
                     cancellationToken);
             }
             // Examine the GraphQL response to see if any errors were encountered
-            if (result.Errors?.Count > 0)
+            if (result?.Errors?.Count > 0)
             {
                 Console.WriteLine($"GraphQL returned errors:\n{string.Join("\n", result.Errors.Select(x => $"  - {x.Message}"))}");
                 return null;
             }
 
+            if (result?.Data?.item?.children == null)
+            {
+              Console.WriteLine($"No children payload returned for item path: {itemPath}");
+              return new ResultItemChildrenWithSecurityChildren
+              {
+                pageInfo = new PageInfo { hasNextPage = false, endCursor = string.Empty },
+                nodes = Array.Empty<ResultItemWithSecurity>()
+              };
+            }
+
             // Use the response data
-            Console.WriteLine($"Childeren count fetched: {result.Data.item.children.nodes.Length} ");
+            Console.WriteLine($"Childeren count fetched: {result.Data.item.children.nodes?.Length ?? 0} ");
             return result.Data.item.children;
         }
 

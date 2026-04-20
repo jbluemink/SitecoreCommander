@@ -1,5 +1,4 @@
-﻿using RaiXpToCloudMigrator.XmCloud;
-using SitecoreCommander.Authoring;
+﻿using SitecoreCommander.Authoring;
 using SitecoreCommander.Authoring.Model;
 
 namespace SitecoreCommander.Command
@@ -19,6 +18,11 @@ namespace SitecoreCommander.Command
                 try
                 {
                     var rootItem = await GetItemSecurity.Get(env, cts.Token, path);
+                    if (rootItem == null)
+                    {
+                        Console.WriteLine("root item not found: " + path);
+                        return false;
+                    }
                     var childs = await GetItemChildren.GetAll(env, cts.Token, path);
                     if (childs == null)
                     {

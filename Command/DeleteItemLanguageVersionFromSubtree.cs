@@ -25,12 +25,13 @@ namespace SitecoreCommander.Command
                     }
                     else
                     {
-                        SearchPaginationItems result;
+                        SearchPaginationItems? result;
                         string paginationEndCursor = "";
                         List<SearchResultItem> versionItemsToDelete = new List<SearchResultItem>();
                         do
                         {
                             result = await GetItemVersionsAndDescendants.SearchPagination(env, cts.Token, subtreeroot.id, language, paginationEndCursor);
+                            if (result == null) break;
                             paginationEndCursor = result.pageOne.pageInfo.endCursor;
                             //first get all items to delete, because when you alread start with deleting the endCursor /total result can change.
                             versionItemsToDelete.AddRange( result.pageOne.results);

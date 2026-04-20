@@ -1,13 +1,13 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace SitecoreCommander.Edge.Model
 { 
     internal class ResultGetItem
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string path { get; set; }
-        public ResultValue created { get; set; }
+        public string id { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public string path { get; set; } = string.Empty;
+        public ResultValue created { get; set; } = null!;
         public string itemIdEnclosedInBraces
         {
             get { return Guid.Parse(id).ToString("B").ToUpper(); }

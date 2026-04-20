@@ -26,12 +26,13 @@ namespace SitecoreCommander.Command
                     }
                     else
                     {
-                        SearchPaginationItems result;
+                        SearchPaginationItems? result;
                         string paginationEndCursor = "";
                         List<SearchResultItem> versionItemsToEdit = new List<SearchResultItem>();
                         do
                         {
                             result = await GetItemVersionsAndDescendants.SearchPagination(env, cts.Token, subtreeroot.id, language, paginationEndCursor);
+                            if (result == null) break;
                             paginationEndCursor = result.pageOne.pageInfo.endCursor;
                             //first get all items and versions, to edit, because when you alread start editing the endCursor /total result can change.
                             versionItemsToEdit.AddRange(result.pageOne.results);

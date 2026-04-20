@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Edge.Model
+namespace SitecoreCommander.Edge.Model
 {
     internal class SiteInfoCollection
     {
-        public  Site[] siteInfoCollection { get; set; }
+        public Site[] siteInfoCollection { get; set; } = Array.Empty<Site>();
     }
 }

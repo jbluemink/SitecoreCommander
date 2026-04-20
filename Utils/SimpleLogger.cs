@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SitecoreCommander.Utils
 {
-
-    using System;
-    using System.IO;
-    using System.Threading.Tasks; // 👈 Nodig voor Task en async/await
-
     public static class SimpleLogger
     {
-        private static string _logFilePath;
+        private static string _logFilePath = string.Empty;
 
-        // De initialisatiemethode kan synchroon blijven, omdat deze eenmalig wordt aangeroepen.
+        public static string GetLogFilePath()
+        {
+            return _logFilePath;
+        }
+
+        // Initialization can remain synchronous because it runs once.
         public static void InitializeLogFile()
         {
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -27,19 +25,18 @@ namespace SitecoreCommander.Utils
             _logFilePath = Path.Combine(logDirectory, logFileName);
 
             // Let op: Log-aanroep moet nu ook async/await-compatibel zijn (zie main-methode)
-            // Voor een snelle initialisatie houden we deze Log call hier even weg, 
-            // of we laten de caller deze direct na InitializeLogFile aanroepen.
+            // Keep initialization lightweight; callers can log immediately after initialization.
         }
 
         /// <summary>
         /// Writes a message to the log file asynchronously (non-blocking).
         /// </summary>
         /// <param name="message">The message content to log.</param>
-        public static async Task Log(string message) // 👈 Maak de methode async en return Task
+        public static async Task LogAsync(string message)
         {
             if (string.IsNullOrEmpty(_logFilePath))
             {
-                // Initialiseer indien nodig. Omdat dit synchroon is, blokkeert het even. 
+                // Initialize on first use. This synchronous path may block briefly.
                 // Beter is om dit altijd bij de start te doen.
                 InitializeLogFile();
             }
@@ -48,7 +45,7 @@ namespace SitecoreCommander.Utils
 
             try
             {
-                // 🚀 Gebruik de asynchrone versie en 'await' de bewerking
+                // Use async file IO and await completion.
                 await File.AppendAllTextAsync(_logFilePath, logLine + Environment.NewLine);
             }
             catch (Exception ex)

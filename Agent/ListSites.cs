@@ -1,4 +1,4 @@
-﻿using SitecoreCommander.Agent.Model;
+using SitecoreCommander.Agent.Model;
 using SitecoreCommander.Edge.Model;
 using SitecoreCommander.Login;
 using SitecoreCommander.Utils;
@@ -19,7 +19,7 @@ namespace SitecoreCommander.Agent
             using HttpClient client = new();
             if (jobid != null && !string.IsNullOrWhiteSpace(jobid))
             {
-                await SimpleLogger.Log("jobid: " + jobid + " ListSites");
+                await SimpleLogger.LogAsync("jobid: " + jobid + " ListSites");
                 client.DefaultRequestHeaders.Add("x-sc-job-id", jobid);
             }
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.access_token);
@@ -27,12 +27,15 @@ namespace SitecoreCommander.Agent
             using HttpResponseMessage response = await client.GetAsync(agentApiEndpoint, cancellationToken);
             string json = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            var options = new JsonSerializerOptions
+            await AgentApiResponseHelper.LogTokenDiagnosticsAsync("ListSites", agentApiEndpoint, token.scope);
+
+            var responseValue = AgentApiResponseHelper.DeserializeOrThrow<SiteListResponse>(response, json, agentApiEndpoint);
+            if (responseValue == null)
             {
-                PropertyNameCaseInsensitive = true
-            };
-            var responseValue = JsonSerializer.Deserialize<SiteListResponse>(json, options);
-            responseValue!.__jobid = jobid;
+                return null;
+            }
+
+            responseValue.__jobid = jobid ?? string.Empty;
             return responseValue;
         }
     }

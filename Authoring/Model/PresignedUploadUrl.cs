@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class PresignedUploadUrl
+    public class PresignedUploadUrl
     {
-        public string presignedUploadUrl { get; set; }
+        public string presignedUploadUrl { get; set; } = string.Empty;
     }
 }

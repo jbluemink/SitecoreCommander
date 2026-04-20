@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class DeleteItemResponse
+    public class DeleteItemResponse
     {
-        public Successful deleteItem { get; set; }
+        public Successful deleteItem { get; set; } = null!;
     }
 }

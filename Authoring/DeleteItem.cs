@@ -7,18 +7,33 @@ namespace SitecoreCommander.Authoring
     {
         internal static async Task<bool> Delete(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Delete(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemPath);
+        }
+
+        internal static async Task<bool> Delete(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemPath)
+        {
+            return await Delete(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemPath);
+        }
+
+        internal static async Task<bool> Delete(JwtContext context, CancellationToken cancellationToken, string itemPath)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Delete(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemPath);
+        }
+
+        private static async Task<bool> Delete(AuthoringApiContext context, CancellationToken cancellationToken, string itemPath)
+        {
 
              Console.WriteLine("Try to Delete item " + itemPath);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
             var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.DeleteItemResponse>(
-                new Uri(graphqlendpoint),
+                context.GraphQlEndpoint,
                 HttpMethod.Post,
-                accessToken,
+                context.AccessToken,
                 "",
                 "mutation DeleteItem {" +
                 "deleteItem(" +

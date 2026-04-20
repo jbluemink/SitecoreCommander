@@ -39,7 +39,7 @@ namespace SitecoreCommander.Authoring
             return Regex.Replace(input, "<.*?>", string.Empty);
         }
 
-        public static string GetYouTubeVideoId(string url)
+        public static string? GetYouTubeVideoId(string? url)
         {
             if (string.IsNullOrEmpty(url))
                 return null;

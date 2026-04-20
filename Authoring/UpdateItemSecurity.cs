@@ -9,21 +9,33 @@ namespace SitecoreCommander.Authoring
     internal class UpdateItemSecurity
     {
 
-        internal static async Task<Created> UpdateItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string securityString, string language)
+        internal static async Task<Created?> UpdateItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string securityString, string language)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await UpdateItem(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemId, securityString, language);
+        }
+
+        internal static async Task<Created?> UpdateItem(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemId, string securityString, string language)
+        {
+            return await UpdateItem(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemId, securityString, language);
+        }
+
+        internal static async Task<Created?> UpdateItem(JwtContext context, CancellationToken cancellationToken, string itemId, string securityString, string language)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await UpdateItem(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemId, securityString, language);
+        }
+
+        private static async Task<Created?> UpdateItem(AuthoringApiContext context, CancellationToken cancellationToken, string itemId, string securityString, string language)
+        {
 
             Console.WriteLine("Try to update security field for item " + itemId);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<UpdateItemResponse>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<UpdateItemResponse>(
+                context,
                 "mutation UpdateItem {" +
                 "updateItem(" +
                 "input: {" +

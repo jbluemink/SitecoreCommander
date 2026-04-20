@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SitecoreCommander.Authoring.Model
 {
@@ -22,10 +22,10 @@ namespace SitecoreCommander.Authoring.Model
     public class SearchCriteriaInput
     {
         [JsonPropertyName("field")]
-        public string Field { get; set; }
+        public string Field { get; set; } = string.Empty;
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string Value { get; set; } = string.Empty;
 
         [JsonPropertyName("criteriaType")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

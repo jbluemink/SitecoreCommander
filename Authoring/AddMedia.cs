@@ -15,21 +15,33 @@ namespace SitecoreCommander.Authoring
         //If the query for a pre-signed upload URL returns an error with the message The specified key is not a valid size for this algorithm, check if the GraphQL.UploadMediaOptions.EncryptionKey setting has a value. For example:
         //<setting name = "GraphQL.UploadMediaOptions.EncryptionKey" value= "432A462D4A614E64" />
         //If it does not, you must set it.
-        internal static async Task<Uploaded> Create(EnvironmentConfiguration env, CancellationToken cancellationToken, string websiteitempath, string language, string alt, string file)
+        internal static async Task<Uploaded?> Create(EnvironmentConfiguration env, CancellationToken cancellationToken, string websiteitempath, string language, string alt, string file)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Create(AuthoringApiContext.FromEnvironment(env), cancellationToken, websiteitempath, language, alt, file);
+        }
+
+        internal static async Task<Uploaded?> Create(JwtTokenResponse token, string host, CancellationToken cancellationToken, string websiteitempath, string language, string alt, string file)
+        {
+            return await Create(AuthoringApiContext.FromJwt(token, host), cancellationToken, websiteitempath, language, alt, file);
+        }
+
+        internal static async Task<Uploaded?> Create(JwtContext context, CancellationToken cancellationToken, string websiteitempath, string language, string alt, string file)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Create(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, websiteitempath, language, alt, file);
+        }
+
+        private static async Task<Uploaded?> Create(AuthoringApiContext context, CancellationToken cancellationToken, string websiteitempath, string language, string alt, string file)
+        {
 
             Console.WriteLine("Try to Create media item " + websiteitempath);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<UploadMedia>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<UploadMedia>(
+                context,
                 "mutation {" +
                 "uploadMedia(" +
                 "input: {" +
@@ -46,7 +58,7 @@ namespace SitecoreCommander.Authoring
             if (result.Errors?.Count > 0)
             {
                 Console.WriteLine($"GraphQL returned errors:\n{string.Join("\n", result.Errors.Select(x => $"  - {x.Message}"))}");
-                if (result.Errors.FirstOrDefault().Message == "The specified key is not a valid size for this algorithm.")
+                if (result.Errors.FirstOrDefault()?.Message == "The specified key is not a valid size for this algorithm.")
                 {
                     Console.WriteLine("TIP: Check if the GraphQL.UploadMediaOptions.EncryptionKey setting has a value. For example: <setting name=\"GraphQL.UploadMediaOptions.EncryptionKey\" value=\"432A462D4A614E64\" />");
                 }
@@ -58,7 +70,7 @@ namespace SitecoreCommander.Authoring
 
             var result2 = await Request.CallGraphQLUploadAsync<Uploaded>(
                            HttpMethod.Post,
-                           accessToken,
+                           context.AccessToken,
                            result.Data.uploadMedia.presignedUploadUrl,
                            file,
                            cancellationToken);

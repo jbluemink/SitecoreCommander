@@ -7,19 +7,31 @@ namespace SitecoreCommander.Authoring
     {
         internal static async Task<ResultItem?> Add(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string language)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Add(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemId, language);
+        }
+
+        internal static async Task<ResultItem?> Add(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemId, string language)
+        {
+            return await Add(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemId, language);
+        }
+
+        internal static async Task<ResultItem?> Add(JwtContext context, CancellationToken cancellationToken, string itemId, string language)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Add(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemId, language);
+        }
+
+        internal static async Task<ResultItem?> Add(AuthoringApiContext context, CancellationToken cancellationToken, string itemId, string language)
+        {
 
             Console.WriteLine("Try to Add version item " + itemId);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.AddItemVersion>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<SitecoreCommander.Authoring.Model.AddItemVersion>(
+                context,
                 "mutation addItemVersion{" +
                 "addItemVersion(" +
                 "input: {" +

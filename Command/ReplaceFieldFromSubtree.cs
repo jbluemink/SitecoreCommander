@@ -27,7 +27,7 @@ namespace SitecoreCommander.Command
                     }
                     else
                     {
-                        SearchWithFieldResult result;
+                        SearchWithFieldResult? result;
                         int paginationPage = 0;
                         int pageSize = 25;
                         int totalResult = 0;
@@ -36,8 +36,12 @@ namespace SitecoreCommander.Command
                         {
                             //not possible currently to filter on security, so get all items and filter in code
                             result = await GetItemFieldAndDescendants.SearchPagination(env, cts.Token, subtreeroot.id, fieldname, pageSize, paginationPage, language, templateName);
+                            if (result?.search == null)
+                            {
+                                break;
+                            }
                             paginationPage++;
-                             totalResult = result.search.totalCount;
+                            totalResult = result.search.totalCount;
                             //first get all items to modify, because when you alread start editing it might effect the pagination.
                             if (result.search.results != null)
                             {

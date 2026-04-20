@@ -1,10 +1,10 @@
-﻿namespace SitecoreCommander.Edge.Model
+namespace SitecoreCommander.Edge.Model
 { 
     internal class Site
     {
-        public string hostname { get; set; }
-        public string language { get; set; }
-        public string name { get; set; }
-        public string rootPath { get; set; }
+        public string hostname { get; set; } = string.Empty;
+        public string language { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public string rootPath { get; set; } = string.Empty;
     }
 }

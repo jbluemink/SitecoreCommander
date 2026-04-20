@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class Language
+    public class Language
     {
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
     }
 }

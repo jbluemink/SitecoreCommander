@@ -8,22 +8,34 @@ namespace SitecoreCommander.Authoring
     internal class GetItemSecurityAndDescendants
     {
 
-        internal static async Task<SearchWithSecurity> SearchPagination(EnvironmentConfiguration env, CancellationToken cancellationToken, string rootId, int pageSize, int page, string language)
+        internal static async Task<SearchWithSecurity?> SearchPagination(EnvironmentConfiguration env, CancellationToken cancellationToken, string rootId, int pageSize, int page, string language)
+      {
+        return await SearchPagination(AuthoringApiContext.FromEnvironment(env), cancellationToken, rootId, pageSize, page, language);
+      }
+
+      internal static async Task<SearchWithSecurity?> SearchPagination(JwtTokenResponse token, string host, CancellationToken cancellationToken, string rootId, int pageSize, int page, string language)
+      {
+        return await SearchPagination(AuthoringApiContext.FromJwt(token, host), cancellationToken, rootId, pageSize, page, language);
+      }
+
+      internal static async Task<SearchWithSecurity?> SearchPagination(JwtContext context, CancellationToken cancellationToken, string rootId, int pageSize, int page, string language)
+      {
+        if (context == null)
+          throw new ArgumentNullException(nameof(context));
+        return await SearchPagination(AuthoringApiContext.FromJwt(
+            new JwtTokenResponse { access_token = context.AccessToken }, 
+            context.Host), cancellationToken, rootId, pageSize, page, language);
+      }
+
+      private static async Task<SearchWithSecurity?> SearchPagination(AuthoringApiContext context, CancellationToken cancellationToken, string rootId, int pageSize, int page, string language)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
             string rootidlowercase = rootId.Replace("-", "").Replace("}", "").Replace("}", "").ToLower();
 
             Console.WriteLine("Try to search items with autohoring api rootid" + rootidlowercase);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<SearchWithSecurity>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+      var result = await AuthoringGraphQl.ExecuteAsync<SearchWithSecurity>(
+        context,
                  $@"query ($rootid:String! $pagesize:Int! $page:Int! $language:String!){{
   search(
     query: {{

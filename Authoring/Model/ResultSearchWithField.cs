@@ -1,8 +1,8 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class ResultSearchWithField
+    public class ResultSearchWithField
     {
-        public InnerItemSearchWithField[] results { get; set; }
+        public InnerItemSearchWithField[] results { get; set; } = Array.Empty<InnerItemSearchWithField>();
         public int totalCount { get; set; }
     }
 }

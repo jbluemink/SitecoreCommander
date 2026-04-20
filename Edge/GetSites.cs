@@ -6,12 +6,12 @@ namespace SitecoreCommander.Edge
     internal class GetEdgeSites
     {
 
-        internal static async Task<Site[]> Get(EnvironmentConfiguration env, CancellationToken cancellationToken)
+        internal static async Task<Site[]?> Get(EnvironmentConfiguration env, CancellationToken cancellationToken)
         {
             string graphqlendpoint = env.Host;
             if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
             graphqlendpoint += "sitecore/api/graph/edge/";
-            string apikey = Config.apikey;
+            string apikey = EdgeHelper.ResolveApiKey();
 
             Console.WriteLine("Searching for Sites with Edge API");
 
@@ -40,7 +40,7 @@ namespace SitecoreCommander.Edge
             // Examine the GraphQL response to see if any errors were encountered
             if (result.Errors?.Count > 0)
             {
-                Console.WriteLine($"GraphQL returned errors:\n{string.Join("\n", result.Errors.Select(x => $"  - {x.Message}"))}");
+                Console.WriteLine($"GraphQL returned errors:\n{EdgeHelper.FormatGraphQlErrorsWithGuidance(result.Errors)}");
                 return null;
             }
 

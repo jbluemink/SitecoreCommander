@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 { 
-    internal class Response
+    public class Response
     {
-        public ResultItem item { get; set; }
+        public ResultItem item { get; set; } = null!;
     }
 }

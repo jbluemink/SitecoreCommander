@@ -3,28 +3,40 @@ using SitecoreCommander.Authoring.Model;
 using SitecoreCommander.Login;
 using SitecoreCommander.Authoring;
 
-namespace RaiXpToCloudMigrator.XmCloud
+namespace SitecoreCommander.Authoring
 {
     internal class CreateTagItem
     {
         public static string TagTemplateID = "{6B40E84C-8785-49FC-8A10-6BCA862FF7EA}";
 
-        internal static async Task<Created> CreateTag(EnvironmentConfiguration env, CancellationToken cancellationToken, string tag, string parentID, string language)
+        internal static async Task<Created?> CreateTag(EnvironmentConfiguration env, CancellationToken cancellationToken, string tag, string parentID, string language)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await CreateTag(AuthoringApiContext.FromEnvironment(env), cancellationToken, tag, parentID, language);
+        }
+
+        internal static async Task<Created?> CreateTag(JwtTokenResponse token, string host, CancellationToken cancellationToken, string tag, string parentID, string language)
+        {
+            return await CreateTag(AuthoringApiContext.FromJwt(token, host), cancellationToken, tag, parentID, language);
+        }
+
+        internal static async Task<Created?> CreateTag(JwtContext context, CancellationToken cancellationToken, string tag, string parentID, string language)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await CreateTag(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, tag, parentID, language);
+        }
+
+        private static async Task<Created?> CreateTag(AuthoringApiContext context, CancellationToken cancellationToken, string tag, string parentID, string language)
+        {
             string itemname = Helper.ToValidItemName(tag);
             string templateId = TagTemplateID;
             Console.WriteLine("Try to Create tag item " + itemname);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<CreateItem>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<CreateItem>(
+                context,
                 "mutation {" +
                 "createItem(" +
                 "input: {" +

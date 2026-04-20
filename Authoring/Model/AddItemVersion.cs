@@ -1,7 +1,7 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 {
-    internal class AddItemVersion
+    public class AddItemVersion
     {
-        public Response addItemVersion { get; set; }
+        public Response addItemVersion { get; set; } = null!;
     }
 }

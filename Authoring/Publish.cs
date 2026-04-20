@@ -1,9 +1,4 @@
 ﻿using SitecoreCommander.Login;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SitecoreCommander.Authoring
 {
@@ -11,20 +6,25 @@ namespace SitecoreCommander.Authoring
     {
         internal static async Task<string?> PublishItem(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemId, string[] languages)
         {
-            return await PublishItem(env.AccessToken, env.Host, cancellationToken, itemId, languages);
+            return await PublishItem(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemId, languages);
         }
+
         internal static async Task<string?> PublishItem(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemId, string[] languages)
         {
-            return await PublishItem(token.access_token, host, cancellationToken, itemId, languages);
+            return await PublishItem(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemId, languages);
         }
 
-        private static async Task<string?> PublishItem(string token, string host, CancellationToken cancellationToken, string itemId, string[] languages)
+        internal static async Task<string?> PublishItem(JwtContext context, CancellationToken cancellationToken, string itemId, string[] languages)
         {
-            string graphqlendpoint = host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = token;
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await PublishItem(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemId, languages);
+        }
 
+        private static async Task<string?> PublishItem(AuthoringApiContext context, CancellationToken cancellationToken, string itemId, string[] languages)
+        {
             Console.WriteLine($"Try to Publish item {itemId} with languages: {string.Join(", ", languages)}");
 
             // Build GraphQL mutation
@@ -47,11 +47,8 @@ mutation {{
 
             try
             {
-                var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.PublishItemResponse>(
-                    new Uri(graphqlendpoint),
-                    HttpMethod.Post,
-                    accessToken,
-                    "",
+                var result = await AuthoringGraphQl.ExecuteAsync<SitecoreCommander.Authoring.Model.PublishItemResponse>(
+                    context,
                     mutation,
                     new { },
                     cancellationToken);

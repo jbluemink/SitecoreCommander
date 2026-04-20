@@ -5,20 +5,20 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="vanwijnensamenbouwenaanruimtevooreenbeterleven.WordPress.2025-05-16.xml" />
+    <Compile Remove="fox-bynder-to-sitecore-content-hub-importer\**\*.cs" />
+    <Compile Remove="tests\**\*.cs" />
+    <None Remove="fox-bynder-to-sitecore-content-hub-importer\**\*" />
+    <None Remove="tests\**\*" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="WordPress-example.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="Stylelabs.M.Sdk.WebClient" Version="4.2.61" />
   </ItemGroup>
 
 </Project>

@@ -2,24 +2,24 @@
 
 namespace SitecoreCommander.Lib
 {
-    internal class Login
+    public class Login
     {
-        internal static EnvironmentConfiguration GetSitecoreEnvironment()
+        public static EnvironmentConfiguration GetSitecoreEnvironment()
         {
             using (StreamReader r = new StreamReader(Config.XMCloudUserJsonPath))
             {
                 string json = r.ReadToEnd();
                 var source = JsonSerializer.Deserialize<UserJson>(json);
-                return GetEnvironmentConfiguration(source, "");
+                return GetEnvironmentConfiguration(source ?? new UserJson(), "");
             }
         }
-        internal static EnvironmentConfiguration GetSitecoreEnvironment(string endpointName)
+        public static EnvironmentConfiguration GetSitecoreEnvironment(string endpointName)
         {
             using (StreamReader r = new StreamReader(Config.XMCloudUserJsonPath))
             {
                 string json = r.ReadToEnd();
                 var source = JsonSerializer.Deserialize<UserJson>(json);
-                return GetEnvironmentConfiguration(source, endpointName);
+                return GetEnvironmentConfiguration(source ?? new UserJson(), endpointName);
             }
         }
 
@@ -35,20 +35,18 @@ namespace SitecoreCommander.Lib
                 endpointName = userJson.DefaultEndpoint;
             }
 
-            if (userJson.Endpoints.TryGetValue(endpointName, out EnvironmentConfiguration endpointConfig))
+            if (userJson.Endpoints.TryGetValue(endpointName, out var endpointConfig) && endpointConfig != null)
             {
                 Console.WriteLine($"Connection {endpointName} Ref: {endpointConfig.Ref} Host: {endpointConfig.Host}");
                 if (!string.IsNullOrEmpty(endpointConfig.Ref) && string.IsNullOrEmpty(endpointConfig.AccessToken))
-                { 
+                {
                     return GetEnvironmentConfiguration(userJson, "xmCloud");
                 }
                 return endpointConfig;
             }
-            else
-            {
-                Console.WriteLine($"Endpoint '{endpointName}' not found.");
-            }
-            return null;
+
+            Console.WriteLine($"Endpoint '{endpointName}' not found.");
+            throw new InvalidOperationException($"Endpoint '{endpointName}' could not be resolved from user.json.");
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace SitecoreCommander.Authoring.Model
+namespace SitecoreCommander.Authoring.Model
 { 
-    internal class Successful
+    public class Successful
     {
         public bool successful { get; set; }
     }

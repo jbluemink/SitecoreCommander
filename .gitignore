@@ -396,3 +396,12 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Environment variables
+.env
+.env.local
+appsettings.Local.json
+**/appsettings.Local.json
+
+# Migration run logs
+XmToAi/migration-logs/

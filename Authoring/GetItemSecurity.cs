@@ -5,23 +5,34 @@ using System.Xml.Linq;
 
 namespace SitecoreCommander.Authoring
 {
-    internal class GetItemSecurity
+    public class GetItemSecurity
     {
-        internal static async Task<ResultItemWithSecurity?> Get(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath)
+        public static async Task<ResultItemWithSecurity?> Get(EnvironmentConfiguration env, CancellationToken cancellationToken, string itemPath)
         {
-            string graphqlendpoint = env.Host;
-            if (!graphqlendpoint.EndsWith("/")) { graphqlendpoint += "/"; }
-            graphqlendpoint += "sitecore/api/authoring/graphql/v1/";
-            string accessToken = env.AccessToken;
+            return await Get(AuthoringApiContext.FromEnvironment(env), cancellationToken, itemPath);
+        }
 
+        internal static async Task<ResultItemWithSecurity?> Get(JwtTokenResponse token, string host, CancellationToken cancellationToken, string itemPath)
+        {
+            return await Get(AuthoringApiContext.FromJwt(token, host), cancellationToken, itemPath);
+        }
+
+        internal static async Task<ResultItemWithSecurity?> Get(JwtContext context, CancellationToken cancellationToken, string itemPath)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            return await Get(AuthoringApiContext.FromJwt(
+                new JwtTokenResponse { access_token = context.AccessToken }, 
+                context.Host), cancellationToken, itemPath);
+        }
+
+        private static async Task<ResultItemWithSecurity?> Get(AuthoringApiContext context, CancellationToken cancellationToken, string itemPath)
+        {
              Console.WriteLine("Try to get item with security fields from: " + itemPath);
 
             // Call GraphQL endpoint here, specifying return data type, endpoint, method, query, and variables
-            var result = await Request.CallGraphQLAsync<SitecoreCommander.Authoring.Model.ItemWithSecurity>(
-                new Uri(graphqlendpoint),
-                HttpMethod.Post,
-                accessToken,
-                "",
+            var result = await AuthoringGraphQl.ExecuteAsync<SitecoreCommander.Authoring.Model.ItemWithSecurity>(
+                context,
                 $@"query ($path:String) {{
   item(where: {{ path: $path }}) {{
     name
