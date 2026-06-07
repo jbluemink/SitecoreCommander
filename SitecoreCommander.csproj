@@ -9,10 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="vanwijnensamenbouwenaanruimtevooreenbeterleven.WordPress.2025-05-16.xml" />
-    <Compile Remove="fox-bynder-to-sitecore-content-hub-importer\**\*.cs" />
     <Compile Remove="tests\**\*.cs" />
-    <None Remove="fox-bynder-to-sitecore-content-hub-importer\**\*" />
     <None Remove="tests\**\*" />
   </ItemGroup>
 

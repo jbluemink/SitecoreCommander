@@ -1,13 +1,18 @@
 # SitecoreCommander
 
-SitecoreCommander is a .NET automation toolkit for Sitecore XM Cloud (Sitecore IA) and Sitecore 10.3+.
+SitecoreCommander is a .NET/C# automation toolkit for SitecoreAI and Sitecore 10.3+.
 
-It is built for developers, technical content teams, and administrators who need to execute reliable API-based operations at scale. Instead of doing isolated calls in tools like Postman or GraphQL Playground, SitecoreCommander helps you orchestrate complete workflows across multiple APIs with reusable C# code.
+It is built for developers, technical content teams, and administrators who need reliable API automation for real projects, not one-off requests. Instead of isolated calls in Postman or GraphQL Playground, SitecoreCommander helps you compose reusable command chains that execute multiple API steps safely and consistently.
 
-The project is also designed for modern AI-assisted development workflows, including Vibe Coding and coding assistants such as GitHub Copilot. You can use it as a practical execution layer for AI-generated scripts, migration routines, and repeatable operational tasks.
+The toolkit is designed for a productive programming workflow in Visual Studio and Visual Studio Code: strong typing, refactoring support, debugging, and source-controlled automation code. Visual Studio Code offers excellent GitHub Copilot support for fast iteration, while Visual Studio provides a more advanced debugging experience for complex flows.
 
 ## Overview
-SitecoreCommander provides a scripting and automation approach inside Visual Studio and .NET, with strong debugging, logging, and version-controlled code. It is suitable for both experimentation and production-ready automation, especially for long-running or multi-step operations.
+SitecoreCommander provides a script-like automation approach in C#, with production-oriented engineering practices. It is well suited for multi-step and high-volume API workflows where reliability, diagnostics, and maintainability matter.
+
+Typical workflow shape:
+1. Run one operation to discover context (for example sites/items/pages).
+2. Feed results into follow-up operations (update, move, publish, verify).
+3. Validate outcomes and rerun safely when needed.
 
 It covers:
 - Sitecore Agent API (REST)
@@ -18,11 +23,30 @@ It covers:
 - Optional Content Hub integration helpers
 
 ## Why SitecoreCommander
-- API-first automation: Execute complex multi-call flows that go beyond single request tools.
-- Developer ergonomics: Use C#, debugging, and source control instead of ad-hoc scripts.
-- Safer operations: Prefer Sitecore APIs over elevated in-instance scripting for sensitive environments.
-- Scalable scripting: Handle long-running and resource-intensive tasks more reliably.
-- AI-ready foundation: Great for AI assistants that generate or refine migration and automation code.
+- Not-from-scratch advantage: start from existing wrappers, examples, and operational patterns instead of rebuilding plumbing.
+- Reliability for larger runs: designed for pagination, batch-oriented processing, and limit-aware API usage patterns.
+- Better debugging and maintenance: C# tooling in Visual Studio and Visual Studio Code makes multi-step flows easier to inspect, refactor, and test, with the deepest debugger capabilities in Visual Studio.
+- Safer automation: encourage explicit prechecks, controlled mutations, and explicit publish steps.
+- AI-ready execution layer: AI can generate tasks quickly, while SitecoreCommander provides structure and guardrails for real execution.
+
+## Why Not Start From Scratch
+A blank script can work for small one-off tasks, but larger Sitecore automation often fails on details such as pagination, query limits, inconsistent retry/error handling, and partial result interpretation.
+
+SitecoreCommander reduces that risk by providing:
+1. Reusable API wrappers and examples.
+2. Repeatable workflow patterns for multi-step operations.
+3. A typed C# codebase that is easier to review and maintain over time.
+4. A stronger debugging experience than ad-hoc request collections.
+
+## AI-Assisted Workflow
+SitecoreCommander works well with GitHub Copilot and other AI assistants when you want fast iteration without losing operational discipline.
+
+Recommended flow:
+1. Ask AI to draft a workflow goal and required operations.
+2. Map each step to existing wrappers/examples.
+3. Add prechecks and rollback/compensation for mutating operations.
+4. Execute in controlled batches and validate output.
+5. Keep the result as reusable C# code in source control.
 
 ## Typical Use Cases
 - Content migration and bulk content updates
@@ -40,7 +64,18 @@ This is an actively evolving toolkit. Some scenarios may require customization f
 - Sitecore Edge API (GraphQL)
 - Sitecore ItemService (REST)
 - WordPress XML import helpers
-- Optional Content Hub integration helpers
+- Optional Content Hub integration helpers (Content Hub API; service-based integration layer)
+- Optional Bynder DAM integration helpers (Bynder API v4 REST)
+
+## Documentation Structure For Contributors
+- `README.md`: product overview, setup, and quick operational guidance.
+- `AI/`: human-facing playbooks, templates, and checklists for implementation and review.
+- `.github/skills/`: agent-invocable deep technical rules (placeholder/layout mechanics).
+- `Examples/`: executable examples aligned with playbooks.
+
+Start points:
+- `AI/README.md` for the documentation map.
+- `.github/skills/sitecore-layout-xml/SKILL.md` for layout XML and placeholder rules.
 
 ## Quick Start
 1. Create or update local settings in `appsettings.Local.json`.
@@ -84,6 +119,8 @@ SitecoreCommander examples support two authentication paths:
 - `AI/AGENT_API_PLAYBOOK.md`
 - `AI/AGENT_PROMPT_TEMPLATE.md`
 - `AI/agent-api-index.json`
+- `AI/README.md`
+- `AI/DOCUMENTATION-VALIDATION.md`
 
 ## Troubleshooting
 If Authoring API search returns Solr schema/index errors, verify that the relevant index is populated and up to date.

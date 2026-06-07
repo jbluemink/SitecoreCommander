@@ -11,16 +11,16 @@ namespace SitecoreCommander.Agent
             PropertyNameCaseInsensitive = true
         };
 
-        internal static T? DeserializeOrThrow<T>(HttpResponseMessage response, string body, string endpoint)
+        internal static T? DeserializeOrThrow<T>(HttpResponseMessage response, string? body, string endpoint)
         {
-            body ??= string.Empty;
+            var responseBody = body ?? string.Empty;
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return default;
 
             if (!response.IsSuccessStatusCode)
             {
-                var snippet = BuildSnippet(body);
+                var snippet = BuildSnippet(responseBody);
                 var message =
                     $"Agent API request failed: {(int)response.StatusCode} ({response.ReasonPhrase})\n" +
                     $"Endpoint: {endpoint}\n" +
@@ -30,7 +30,7 @@ namespace SitecoreCommander.Agent
                 throw new InvalidOperationException(message);
             }
 
-            var trimmed = body?.TrimStart() ?? string.Empty;
+            var trimmed = responseBody.TrimStart();
             if (string.IsNullOrWhiteSpace(trimmed))
             {
                 throw new InvalidOperationException($"Agent API returned an empty body for endpoint '{endpoint}'.");
@@ -39,18 +39,18 @@ namespace SitecoreCommander.Agent
             var first = trimmed[0];
             if (first != '{' && first != '[')
             {
-                var snippet = BuildSnippet(body);
+                var snippet = BuildSnippet(responseBody);
                 throw new InvalidOperationException(
                     $"Agent API returned non-JSON content for endpoint '{endpoint}'. Response: {snippet}");
             }
 
             try
             {
-                return JsonSerializer.Deserialize<T>(body, JsonOptions);
+                return JsonSerializer.Deserialize<T>(responseBody, JsonOptions);
             }
             catch (JsonException ex)
             {
-                var snippet = BuildSnippet(body);
+                var snippet = BuildSnippet(responseBody);
                 throw new InvalidOperationException(
                     $"Agent API response parsing failed for endpoint '{endpoint}'. Response: {snippet}", ex);
             }

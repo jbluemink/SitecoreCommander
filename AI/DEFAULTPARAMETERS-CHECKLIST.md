@@ -2,6 +2,10 @@
 
 **Status:** MANDATORY for all component mappings in `component-map.json`
 
+## Canonical Source
+- This document is the canonical checklist for `defaultParameters` URL-encoding in this repository.
+- For broader layout XML and placeholder behavior, use `.github/skills/sitecore-layout-xml/SKILL.md` and related references.
+
 ---
 
 ## What Are defaultParameters?

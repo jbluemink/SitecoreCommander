@@ -17,7 +17,7 @@ Use this template to keep AI-run execution consistent.
 
 ## Input
 - `auth_profile`: [authoring-cli | jwt]
-- `target_host`: [required when `auth_profile=jwt` for Authoring]
+- `target_host`: [Sitecore XM Cloud domain/FQDN; required when `auth_profile=jwt` for Authoring calls]
 - `operation`: [exact wrapper method]
 - `parameters`: [name/value list]
 
@@ -30,6 +30,7 @@ Use this template to keep AI-run execution consistent.
 	- `jwt` for Agent wrappers and automation runs.
 	- `authoring-cli` for Authoring/Edge operations when user context is intended.
 6. For `authoring-cli`, include precheck that `XMCloudUserJsonPath` exists and endpoint can be resolved.
+7. For API selection details, use `AI/AGENT_API_PLAYBOOK.md` as the canonical reference.
 
 ## Required Output
 - `api_family`

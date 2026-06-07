@@ -4,7 +4,7 @@ This document helps AI agents choose the correct API wrapper and authentication 
 
 ## API Family Selection
 1. Use Authoring wrappers (`Authoring/`) by default for complete content operations.
-2. Use Agent wrappers (`Agent/`) for site/page listings, job workflows, and stream-style operations.
+2. Use Agent wrappers (`Agent/`) for site/page listings, job workflows, and stream-style operations (paginated, long-running, or multi-step orchestration flows).
 3. Use Edge wrappers for read-focused GraphQL queries.
 
 ## Authentication Profiles
