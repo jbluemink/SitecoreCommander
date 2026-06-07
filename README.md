@@ -20,7 +20,8 @@ It covers:
 - Sitecore Edge API (GraphQL)
 - Sitecore ItemService (REST)
 - WordPress XML import and transformation helpers
-- Optional Content Hub integration helpers
+- Optional Content Hub integration helpers (Content Hub API; service-based integration layer)
+- Optional Bynder DAM integration helpers (Bynder API v4 REST)
 
 ## Why SitecoreCommander
 - Not-from-scratch advantage: start from existing wrappers, examples, and operational patterns instead of rebuilding plumbing.
