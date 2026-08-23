@@ -12,7 +12,8 @@ namespace SitecoreCommander.Examples
             Authoring,
             Edge,
             Command,
-            ContentHub
+            ContentHub,
+            Transfer
         }
 
         /// <summary>
@@ -77,10 +78,11 @@ namespace SitecoreCommander.Examples
                 Console.WriteLine("  3. Edge API (fast read-only queries)");
                 Console.WriteLine("  4. Command Scripts (bulk operations - CAUTION)");
                 Console.WriteLine("  5. Content Hub API (read-only)");
-                Console.WriteLine("  6. Run All APIs");
+                Console.WriteLine("  6. Content Transfer / Item Transfer API");
+                Console.WriteLine("  7. Run All APIs");
                 Console.WriteLine("  0. Exit");
                 Console.WriteLine();
-                Console.Write("Select (0-6): ");
+                Console.Write("Select (0-7): ");
 
                 var choice = Console.ReadLine()?.Trim();
 
@@ -109,6 +111,9 @@ namespace SitecoreCommander.Examples
                         await RunModuleAsync(ApiModule.ContentHub);
                         break;
                     case "6":
+                        await RunModuleAsync(ApiModule.Transfer);
+                        break;
+                    case "7":
                         await RunAllModulesAsync();
                         return;
                     case "0":
@@ -174,6 +179,7 @@ namespace SitecoreCommander.Examples
                     ApiModule.Edge => new EdgeApiExamples(),
                     ApiModule.Command => new CommandApiExamples(),
                     ApiModule.ContentHub => new ContentHubApiExamples(),
+                    ApiModule.Transfer => new TransferApiExamples(),
                     _ => null
                 };
 

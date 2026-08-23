@@ -129,6 +129,18 @@ namespace SitecoreCommander
 
         internal static string DefaultLanguage = GetSetting("SITECOMMANDER_DEFAULT_LANGUAGE", "SitecoreCommander:DefaultLanguage", "en");
 
+        // SitecoreAI Content Transfer / Item Transfer API settings.
+        internal static string TransferSourceHost = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_HOST", "SitecoreCommander:TransferSourceHost");
+        internal static string TransferSourceJwtClientId = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_JWT_CLIENT_ID", "SitecoreCommander:TransferSourceJwtClientId", JwtClientId);
+        internal static string TransferSourceJwtClientSecret = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_JWT_CLIENT_SECRET", "SitecoreCommander:TransferSourceJwtClientSecret", JwtClientSecret);
+        internal static string TransferDestinationHost = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_HOST", "SitecoreCommander:TransferDestinationHost");
+        internal static string TransferDestinationJwtClientId = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_JWT_CLIENT_ID", "SitecoreCommander:TransferDestinationJwtClientId", JwtClientId);
+        internal static string TransferDestinationJwtClientSecret = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_JWT_CLIENT_SECRET", "SitecoreCommander:TransferDestinationJwtClientSecret", JwtClientSecret);
+        internal static string TransferDatabase = GetSetting("SITECOMMANDER_TRANSFER_DATABASE", "SitecoreCommander:TransferDatabase", "master");
+        internal static string TransferItemPath = GetSetting("SITECOMMANDER_TRANSFER_ITEM_PATH", "SitecoreCommander:TransferItemPath");
+        internal static string TransferScope = GetSetting("SITECOMMANDER_TRANSFER_SCOPE", "SitecoreCommander:TransferScope", "SingleItem");
+        internal static string TransferMergeStrategy = GetSetting("SITECOMMANDER_TRANSFER_MERGE_STRATEGY", "SitecoreCommander:TransferMergeStrategy", "KeepExistingItem");
+
         // Values for the legacy Sitecore.Services.Client ItemService.
         // Useful for migration scenarios and older Sitecore XP versions.
         internal static string RestFullApiHostname = GetSetting("SITECOMMANDER_RESTFULL_API_HOSTNAME", "SitecoreCommander:RestFullApiHostname", "https://xmcloudcm.localhost");

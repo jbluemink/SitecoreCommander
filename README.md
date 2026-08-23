@@ -18,6 +18,7 @@ It covers:
 - Sitecore Agent API (REST)
 - Sitecore Authoring API (GraphQL)
 - Sitecore Edge API (GraphQL)
+- SitecoreAI Content Transfer API and Item Transfer API (REST)
 - Sitecore ItemService (REST)
 - WordPress XML import and transformation helpers
 - Optional Content Hub integration helpers (Content Hub API; service-based integration layer)
@@ -63,6 +64,7 @@ This is an actively evolving toolkit. Some scenarios may require customization f
 - Sitecore Authoring API (GraphQL)
 - Sitecore Agent API (REST)
 - Sitecore Edge API (GraphQL)
+- SitecoreAI Content Transfer API and Item Transfer API (REST)
 - Sitecore ItemService (REST)
 - WordPress XML import helpers
 - Optional Content Hub integration helpers (Content Hub API; service-based integration layer)
@@ -111,6 +113,36 @@ SitecoreCommander examples support two authentication paths:
 ## Configuration Priority
 1. `appsettings.Local.json`
 2. Environment variables (if a key is not set in local settings)
+
+## Content Transfer / Item Transfer APIs
+The transfer APIs support content migration between two SitecoreAI environments. Content Transfer runs across source and destination environments to create `.raif` files, then Item Transfer consumes those `.raif` blobs in the destination database.
+
+Required local settings:
+
+```json
+{
+   "SitecoreCommander": {
+      "TransferSourceHost": "source-environment.sitecorecloud.io",
+      "TransferSourceJwtClientId": "source-automation-client-id",
+      "TransferSourceJwtClientSecret": "source-automation-client-secret",
+      "TransferDestinationHost": "destination-environment.sitecorecloud.io",
+      "TransferDestinationJwtClientId": "destination-automation-client-id",
+      "TransferDestinationJwtClientSecret": "destination-automation-client-secret",
+      "TransferDatabase": "master",
+      "TransferItemPath": "/sitecore/content/Home",
+      "TransferScope": "SingleItem",
+      "TransferMergeStrategy": "KeepExistingItem"
+   }
+}
+```
+
+Notes:
+- Use SitecoreAI Deploy environment automation credentials. The JWT audience is `https://api.sitecorecloud.io`.
+- The caller must be an Organization Admin or Organization Owner.
+- Ensure the destination parent chain exists with the same item IDs, or transfer from a common ancestor with `ItemAndDescendants`.
+- `OverrideExistingTree` can delete an existing destination tree before writing transferred items.
+- Chunk bytes must be forwarded exactly as received; do not decompress, decrypt, re-encode, or wrap them.
+- The Item Transfer upload endpoint is intended only for small ad hoc `.raif` files under 100 MB. The primary workflow uses Content Transfer chunks.
 
 ## Notes
 - `appsettings.Local.json` is intended for local values and should not be committed.

@@ -93,10 +93,11 @@ Which API would you like to test?
   3. Edge API (fast read-only queries)
   4. Command Scripts (bulk operations - CAUTION)
   5. Content Hub API (read-only)
-  6. Run All APIs
+  6. Content Transfer / Item Transfer API
+  7. Run All APIs
   0. Exit
 
-Select (0-6): _
+Select (0-7): _
 ```
 
 ---
@@ -192,6 +193,41 @@ Read-only checks against Sitecore Content Hub for migration validation.
   }
 }
 ```
+
+### 6️⃣ **Content Transfer / Item Transfer API**
+Transfer content between SitecoreAI environments using the modern two-step migration workflow.
+
+| Example | Purpose |
+|---------|---------|
+| List Blob Sources | Check `.raif` blobs available in the destination environment |
+| List Item Transfers | Inspect active and completed destination transfers |
+| Transfer History | Inspect historical transfer events |
+| End-to-End Content Migration | Create a source transfer, copy chunks, generate `.raif`, consume it, and monitor completion |
+
+**Required config (appsettings.local.json)**:
+
+```json
+{
+  "SitecoreCommander": {
+    "TransferSourceHost": "source-environment.sitecorecloud.io",
+    "TransferSourceJwtClientId": "source-automation-client-id",
+    "TransferSourceJwtClientSecret": "source-automation-client-secret",
+    "TransferDestinationHost": "destination-environment.sitecorecloud.io",
+    "TransferDestinationJwtClientId": "destination-automation-client-id",
+    "TransferDestinationJwtClientSecret": "destination-automation-client-secret",
+    "TransferDatabase": "master",
+    "TransferItemPath": "/sitecore/content/Home",
+    "TransferScope": "SingleItem",
+    "TransferMergeStrategy": "KeepExistingItem"
+  }
+}
+```
+
+**Safety notes**:
+- Run end-to-end transfers only against non-production environments until validated.
+- `OverrideExistingTree` can delete an existing destination item tree.
+- The destination parent chain must already exist with matching item IDs, unless you transfer from a common ancestor with `ItemAndDescendants`.
+- Chunks are binary payloads and must be forwarded exactly as received.
 
 ---
 

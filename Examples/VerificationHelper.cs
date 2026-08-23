@@ -112,9 +112,6 @@ namespace SitecoreCommander.Examples
             if (hasJwtClientId ^ hasJwtClientSecret)
                 missingKeys.Add("Complete JWT config: both SitecoreCommander:JwtClientId and SitecoreCommander:JwtClientSecret are required");
 
-            if (string.IsNullOrWhiteSpace(Config.apikey))
-                missingKeys.Add("SitecoreCommander:ApiKey");
-
             if (!hasJwtConfig && !hasUserJsonConfig)
             {
                 missingKeys.Add("Authentication: configure JWT credentials OR a valid XMCloudUserJsonPath");
@@ -174,6 +171,13 @@ namespace SitecoreCommander.Examples
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("ℹ️  Sitecore CLI user.json not found. JWT mode remains available.");
+                Console.ResetColor();
+            }
+
+            if (string.IsNullOrWhiteSpace(Config.apikey))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("ℹ️  SitecoreCommander:ApiKey is not configured. Edge API examples may fail until it is set.");
                 Console.ResetColor();
             }
 
