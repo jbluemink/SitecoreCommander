@@ -123,7 +123,12 @@ namespace SitecoreCommander.ContentTransfer
         private static HttpClient CreateClient(TransferEnvironmentContext context)
         {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
+            if (!string.IsNullOrWhiteSpace(context.AccessToken))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
+
+            if (!string.IsNullOrWhiteSpace(context.ApiKey))
+                client.DefaultRequestHeaders.Add("sc_apikey", context.ApiKey);
+
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return client;
         }

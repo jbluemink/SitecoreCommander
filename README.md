@@ -123,11 +123,17 @@ Required local settings:
 {
    "SitecoreCommander": {
       "TransferSourceHost": "source-environment.sitecorecloud.io",
+      "TransferSourceAuthMode": "Auto",
       "TransferSourceJwtClientId": "source-automation-client-id",
       "TransferSourceJwtClientSecret": "source-automation-client-secret",
+      "TransferSourceUserJsonEnvironmentName": "xmcloud-acc",
+      "TransferSourceApiKey": "",
       "TransferDestinationHost": "destination-environment.sitecorecloud.io",
+      "TransferDestinationAuthMode": "Auto",
       "TransferDestinationJwtClientId": "destination-automation-client-id",
       "TransferDestinationJwtClientSecret": "destination-automation-client-secret",
+      "TransferDestinationUserJsonEnvironmentName": "xmcloud-acc",
+      "TransferDestinationApiKey": "",
       "TransferDatabase": "master",
       "TransferItemPath": "/sitecore/content/Home",
       "TransferScope": "SingleItem",
@@ -138,6 +144,14 @@ Required local settings:
 
 Notes:
 - Use SitecoreAI Deploy environment automation credentials. The JWT audience is `https://api.sitecorecloud.io`.
+- `TransferSourceAuthMode` / `TransferDestinationAuthMode` support: `Auto`, `Jwt`, `UserJson`, `ApiKey`.
+- `Auto` resolution order:
+  - Local host (`localhost` / `127.0.0.1`) + API key configured -> `ApiKey`
+  - JWT credentials configured -> `Jwt`
+  - Valid `XMCloudUserJsonPath` configured -> `UserJson`
+  - API key configured -> `ApiKey`
+- `UserJson` mode reads access token from `SitecoreCommander:XMCloudUserJsonPath` and can use `Transfer*UserJsonEnvironmentName` to select endpoint.
+- `ApiKey` mode sends `sc_apikey` and is useful for local Sitecore CM scenarios.
 - The caller must be an Organization Admin or Organization Owner.
 - Ensure the destination parent chain exists with the same item IDs, or transfer from a common ancestor with `ItemAndDescendants`.
 - `OverrideExistingTree` can delete an existing destination tree before writing transferred items.

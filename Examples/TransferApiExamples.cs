@@ -128,7 +128,10 @@ namespace SitecoreCommander.Examples
             }
 
             var dataTree = ContentMigrationWorkflow.CreateDataTreeFromConfig();
-            PrintTransferSummary(dataTree);
+            var source = await TransferEnvironmentContext.CreateSourceAsync();
+            var destination = await TransferEnvironmentContext.CreateDestinationAsync();
+
+            PrintTransferSummary(dataTree, source, destination);
 
             if (dataTree.MergeStrategy == SitecoreCommander.ContentTransfer.Model.TransferMergeStrategy.OverrideExistingTree)
             {
@@ -139,9 +142,6 @@ namespace SitecoreCommander.Examples
 
             if (!VerificationHelper.PromptConfirmation("Start this content migration now?"))
                 return;
-
-            var source = await TransferEnvironmentContext.CreateSourceAsync();
-            var destination = await TransferEnvironmentContext.CreateDestinationAsync();
 
             var result = await ContentMigrationWorkflow.RunAsync(
                 new ContentMigrationWorkflowOptions
@@ -266,7 +266,9 @@ namespace SitecoreCommander.Examples
             }
 
             var dataTree = ContentMigrationWorkflow.CreateDataTreeFromConfig();
-            PrintTransferSummary(dataTree);
+            var source = await TransferEnvironmentContext.CreateSourceAsync();
+
+            PrintTransferSummary(dataTree, source, destination: null);
 
             Console.Write("Target folder (Enter for default artifacts/transfer-chunks): ");
             var inputFolder = Console.ReadLine()?.Trim();
@@ -277,7 +279,6 @@ namespace SitecoreCommander.Examples
             if (!VerificationHelper.PromptConfirmation("Start chunk export from source now?"))
                 return;
 
-            var source = await TransferEnvironmentContext.CreateSourceAsync();
             var transferId = Guid.NewGuid();
 
             var request = new CreateContentTransferRequest
@@ -358,10 +359,13 @@ namespace SitecoreCommander.Examples
                 $"Exported {totalChunks} chunk(s), {totalBytes} bytes to '{exportFolder}'. Manifest: {manifestPath}");
         }
 
-        private static void PrintTransferSummary(DataTree dataTree)
+        private static void PrintTransferSummary(
+            DataTree dataTree,
+            TransferEnvironmentContext source,
+            TransferEnvironmentContext? destination)
         {
-            Console.WriteLine("   Source host:      " + Config.TransferSourceHost);
-            Console.WriteLine("   Destination host: " + Config.TransferDestinationHost);
+            Console.WriteLine("   Source host:      " + source.Host);
+            Console.WriteLine("   Destination host: " + (destination?.Host ?? "n/a (source-only export)"));
             Console.WriteLine("   Database:         " + Config.TransferDatabase);
             Console.WriteLine("   Item path:        " + dataTree.ItemPath);
             Console.WriteLine("   Scope:            " + dataTree.Scope);

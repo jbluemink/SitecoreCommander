@@ -131,11 +131,17 @@ namespace SitecoreCommander
 
         // SitecoreAI Content Transfer / Item Transfer API settings.
         internal static string TransferSourceHost = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_HOST", "SitecoreCommander:TransferSourceHost");
+        internal static string TransferSourceAuthMode = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_AUTH_MODE", "SitecoreCommander:TransferSourceAuthMode", "Auto");
         internal static string TransferSourceJwtClientId = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_JWT_CLIENT_ID", "SitecoreCommander:TransferSourceJwtClientId", JwtClientId);
         internal static string TransferSourceJwtClientSecret = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_JWT_CLIENT_SECRET", "SitecoreCommander:TransferSourceJwtClientSecret", JwtClientSecret);
+        internal static string TransferSourceUserJsonEnvironmentName = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_USER_JSON_ENVIRONMENT_NAME", "SitecoreCommander:TransferSourceUserJsonEnvironmentName", EnvironmentName);
+        internal static string TransferSourceApiKey = GetSetting("SITECOMMANDER_TRANSFER_SOURCE_API_KEY", "SitecoreCommander:TransferSourceApiKey", apikey);
         internal static string TransferDestinationHost = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_HOST", "SitecoreCommander:TransferDestinationHost");
+        internal static string TransferDestinationAuthMode = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_AUTH_MODE", "SitecoreCommander:TransferDestinationAuthMode", "Auto");
         internal static string TransferDestinationJwtClientId = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_JWT_CLIENT_ID", "SitecoreCommander:TransferDestinationJwtClientId", JwtClientId);
         internal static string TransferDestinationJwtClientSecret = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_JWT_CLIENT_SECRET", "SitecoreCommander:TransferDestinationJwtClientSecret", JwtClientSecret);
+        internal static string TransferDestinationUserJsonEnvironmentName = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_USER_JSON_ENVIRONMENT_NAME", "SitecoreCommander:TransferDestinationUserJsonEnvironmentName", EnvironmentName);
+        internal static string TransferDestinationApiKey = GetSetting("SITECOMMANDER_TRANSFER_DESTINATION_API_KEY", "SitecoreCommander:TransferDestinationApiKey", apikey);
         internal static string TransferDatabase = GetSetting("SITECOMMANDER_TRANSFER_DATABASE", "SitecoreCommander:TransferDatabase", "master");
         internal static string TransferItemPath = GetSetting("SITECOMMANDER_TRANSFER_ITEM_PATH", "SitecoreCommander:TransferItemPath");
         internal static string TransferScope = GetSetting("SITECOMMANDER_TRANSFER_SCOPE", "SitecoreCommander:TransferScope", "SingleItem");
